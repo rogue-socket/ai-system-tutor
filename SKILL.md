@@ -1,6 +1,6 @@
 ---
 name: ai-systems-tutor
-description: Agent-driven course on AI systems engineering and agentic workflows. A 3-question vibe check routes the learner to a beginner / middle / expert lane, then the skill drives lessons, schedules reviews, runs exercises, and checkpoints state across sessions. Use when the user invokes the AI systems tutor, opens an AI systems workspace, or makes a request within the AI systems / agents course (learning, reviewing, practicing, mock interviewing). Trigger phrases: "start the course", "AI systems tutor", "agents tutor", "continue the course", "let's keep going", plus topical asks ("teach me X", "review my agent design", "design a Y agent", "what's due today"). Do NOT use for unrelated coding tasks. Covers foundation models, agent loops, memory and RAG, tool use, multi-agent, infra, safety, evaluation. Anchored to Lilian Weng's "LLM Powered Autonomous Agents", Anthropic engineering blog, the OpenAI cookbook, and the Hugging Face Agents course.
+description: Agent-driven course on AI systems engineering and agentic workflows for engineers who write code as part of learning. A short pattern-based vibe check routes the learner to a beginner / bridge / middle / expert lane (or gracefully exits non-coders into a stripped-down operational-literacy track), then the skill drives lessons, schedules reviews, runs exercises, and checkpoints state across sessions. Use when the user invokes the AI systems tutor, opens an AI systems workspace, or makes a request within the AI systems / agents course (learning, reviewing, practicing, mock interviewing). Trigger phrases: "start the course", "AI systems tutor", "agents tutor", "continue the course", "let's keep going", plus topical asks ("teach me X", "review my agent design", "design a Y agent", "what's due today"). Do NOT use for unrelated coding tasks. Covers foundation models, agent loops, memory and RAG, tool use, multi-agent, infra, safety, evaluation. Anchored to Lilian Weng's "LLM Powered Autonomous Agents", Anthropic engineering blog, the OpenAI cookbook, and the Hugging Face Agents course.
 ---
 
 # AI Systems Tutor
@@ -72,23 +72,51 @@ Then:
 
 ### Step 2: Lane routing — find the right diagnostic shape
 
-Before any technical questions, run a 3-question vibe check to route to the right lane. This takes ~1 minute and prevents two known failure modes: crushing beginners with intermediate jargon, and boring experts with foundations.
+Before any technical questions, run a vibe check (~1 minute). The questions look for *patterns* of expertise, not raw counts — a senior infra engineer with no AI work and a research PhD with no production work both need different starting points than the same yes-count would suggest. Earlier versions of this skill counted yeses across three questions and mis-routed people whose expertise was deep but narrow, or broad but shallow. Don't do that.
 
-> "Quick orientation before we start — three yes/no questions to figure out where to begin.
+> "Quick orientation — five short questions, then I'll know where to start. 'Yes' / 'no' / 'sort of' all fine. The questions look for the *shape* of your experience, not the amount.
 >
-> 1. Have you ever called an LLM API directly (e.g., the OpenAI or Anthropic SDK), or only used chat interfaces like ChatGPT?
-> 2. Have you ever built anything with retrieval, vector search, or RAG — even a toy?
-> 3. Have you ever shipped an AI feature to real users, or worked on inference / model serving in any capacity?"
+> 1. Have you written and deployed code that calls an LLM in production — real users, not a notebook or a demo?
+> 2. Have you built a retrieval / RAG system yourself — including the embedding and retrieval logic, even at toy scale?
+> 3. Have you called an LLM API directly from code (SDK, REST), even just for prototypes or research?
+> 4. Outside of AI: have you operated production distributed systems — queues, retries, idempotency, SLOs, on-call?
+> 5. Have you implemented model internals from scratch — attention, KV cache, training loops — even at toy scale?
+>
+> One more, separate: do you write code as part of how you work, or are you here for product / strategy / decision-making literacy without coding?"
 
-Wait for all three. Then route:
+Wait for all answers. **Read the texture of each "no"** — "no, never tried" and "no, that's exactly what I'm worried about" are different signals; the second is a stated goal, not a gap. Surface it later in the assessment.
 
-| yes count | Lane | What runs next |
+#### Non-coder branch
+
+If the last answer is "decision-making literacy" / "I don't code" — be honest before going further:
+
+> "This skill is built for engineers who'll write code as part of learning — exercises, runnable workspaces, code reading. I can still walk you through mental models and trade-offs at the conceptual level, but the practical mode, exercise bank, and design-review parts won't apply. Two options:
+>
+> 1. Stripped-down 'operational literacy' track — concept + diagram + trade-off table, no code. Good for product/strategy decision-making, weaker for actually building things.
+> 2. A different resource that's designed for non-coders (I can suggest some).
+>
+> Which would you prefer?"
+
+If they pick option 1, set `level` to `non_coder` in `progress.json` and run lessons in concept-only mode (skip practical mode and exercise bank; keep notes, diagrams, design-review). If option 2, suggest `Stratechery`, `Latent Space podcast`, the Hugging Face `LLM course` overview chapters, or the Anthropic engineering blog read-through, and gracefully exit. **Don't pretend the full skill serves a non-coder.**
+
+#### Coder branch — route by pattern, not by count
+
+Walk the patterns top-down; first match wins.
+
+| Pattern | Lane | Why |
 |---|---|---|
-| 0/3 | **Beginner** | Step 3a — beginner intake (concrete picture first, light vocab probe) |
-| 1/3 | **Middle** | Step 3b — the standard 9-question diagnostic |
-| 2-3/3 | **Expert** | Step 3c — short depth-probing diagnostic with skip-question affordance |
+| Q1 = yes (has shipped to real users) | **Expert** (Step 3c) | Production reflexes are real |
+| Q1 = no, Q2 = yes, Q5 = yes | **Expert** (Step 3c) | Built + internals from scratch — depth is there; production gaps will surface as gaps |
+| Q1 = no, Q3 = yes, Q5 = yes (calls API + internals, no shipping) | **Middle** (Step 3b) — internals-yes mode | Skip-on-strong default for L0–L2; lessons emphasize L3–L8 (Ren archetype) |
+| Q1 = no, Q3 = yes, Q4 = yes (calls API, ships infra in adjacent domain) | **Bridge** (Step 3a-bridge) | Skip "language model is a function" monologue; anchor on transferable distributed-systems concepts (Priya archetype) |
+| Q1 = no, Q2 = yes, Q5 = no (built toy, no internals, no shipping) | **Middle** (Step 3b) | Bootcamp / self-taught archetype — extra weight on L1/L6 production reflexes (Hassan archetype) |
+| Q1 = no, Q3 = yes, others mixed | **Middle** (Step 3b) standard | The default middle lane |
+| Q1 = no, Q2 = no, Q3 = no, Q4 = yes (no AI at all, but ships infra) | **Bridge** (Step 3a-bridge) | Adjacent-domain expert dropped into AI work |
+| All no | **Beginner** (Step 3a) | True beginner |
 
-If the learner explicitly overrides ("I'm a beginner but want the full diagnostic", "I've shipped agents but want foundations"), honor it — the vibe check is a default, not a verdict. Set `level` in `progress.json` to `beginner` / `intermediate` / `expert` to match the lane.
+**Override.** If the learner says "I want a different lane than that," tell them which lane the patterns suggested and why, then honor the override. The vibe check is a default, not a verdict.
+
+Set `level` in `progress.json` to one of: `beginner` / `bridge` / `middle` / `expert` / `non_coder`.
 
 ---
 

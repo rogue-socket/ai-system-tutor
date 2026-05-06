@@ -3,6 +3,7 @@
   "started": "YYYY-MM-DD",
   "last_session": null,
   "learner": {
+    "_level_comment": "Set by the lane router (SKILL.md Step 2). One of: beginner | bridge | middle | expert | non_coder.",
     "level": null,
     "preferred_language": "python",
     "stated_goal": null,
