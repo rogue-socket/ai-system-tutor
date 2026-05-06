@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "started": "YYYY-MM-DD",
+  "last_session": null,
+  "learner": {
+    "level": null,
+    "preferred_language": "python",
+    "stated_goal": null,
+    "diagnostic_summary": null
+  },
+  "layers": {
+    "L0": {
+      "title": "Mental Models",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L1": {
+      "title": "Foundation Models",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L2": {
+      "title": "Reasoning & Intelligence",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L3": {
+      "title": "Memory & Knowledge",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L4": {
+      "title": "Agency & Tool Use",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L5": {
+      "title": "Multi-Agent Systems",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L6": {
+      "title": "Infrastructure & Deployment",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L7": {
+      "title": "Safety, Security & Governance",
+      "status": "not_started",
+      "topics": {}
+    },
+    "L8": {
+      "title": "Evaluation, Observability & Applications",
+      "status": "not_started",
+      "topics": {}
+    }
+  },
+  "topic_template": {
+    "_comment": "Copy this into layers.LX.topics[<topic-slug>] when you first touch a topic. Status values: not_started | in_progress | shaky | solid | mastered.",
+    "status": "not_started",
+    "confidence": null,
+    "first_seen": null,
+    "last_reviewed": null,
+    "review_count": 0,
+    "weak_points": [],
+    "notes_path": null
+  },
+  "sr_queue": {
+    "_comment": "Spaced-repetition entries. See references/spaced-repetition.md for SM-2 lite math.",
+    "items": []
+  },
+  "sr_item_template": {
+    "id": "<topic-slug>::<question-id>",
+    "topic": "<topic-slug>",
+    "question": "<the question>",
+    "answer_outline": "<bullet outline of correct answer>",
+    "interval_days": 1,
+    "ease": 2.5,
+    "due": "YYYY-MM-DD",
+    "history": []
+  },
+  "sessions": {
+    "_comment": "Append-only log of session entries. One entry per session.",
+    "entries": []
+  },
+  "exercises": {
+    "_comment": "Append-only log of exercises. Each entry: { date, topic, dir, status, takeaways }.",
+    "entries": []
+  },
+  "reviews": {
+    "_comment": "Append-only log of mock interviews and design reviews.",
+    "entries": []
+  }
+}
