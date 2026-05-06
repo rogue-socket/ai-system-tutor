@@ -143,6 +143,23 @@ After their answers, give a short calibrated read — lead with what they got ri
 
 Then start the lesson with a 3-sentence explanation + a Mermaid diagram, **before** any calibration probe. The "calibration before teaching" rule from Step 3 (core philosophy) is suspended for the beginner's first lesson — beginners need a concrete picture in their hands first. Calibration probes resume from lesson 2.
 
+#### Step 3a-bridge: adjacent-domain expert variant
+
+If the router placed the learner here via the **Bridge** pattern (Q4=yes — ships infra in adjacent domain — but Q3 or AI-experience answers are no), the Maya-style "language model is a giant function" monologue is the wrong opening. They run distributed systems for a living; *"a function with billions of parameters"* lands as condescension, not framing.
+
+Open instead with what transfers, then probe what doesn't:
+
+> "You've shipped distributed systems but haven't done AI work. Most of what trips people up at this level is *which of your existing reflexes still apply* — and which ones break. Quick anchor:
+>
+> - **What transfers cleanly:** the agent loop is a worker consuming a queue where the queue is the model's last reply; idempotency, retries, jitter, DLQs, SLOs all still apply and your instincts there are right.
+> - **What breaks:** model latency is bimodal (2s p50 / 60s p99 is normal, not a bug); 'tool' has a specific meaning in agent-land (a function the model can choose to call, not just any API); cost is per-token-not-per-call and that changes capacity planning.
+>
+> Quick probes to find what to skip vs teach:"
+
+Then 3-4 probes biased toward L1 (model basics they haven't seen) and L2 (agent loop framing) — *not* L4/L6, which they likely already grok in the abstract. E.g.: "*Tokens* — your guess?" / "Latency: when I say a model call is bimodal, what would you expect causes the long tail?" / "If your agent's tool returns a 5xx, what's your gut on retry policy?" Their answers tell you which L0-L2 sections are skippable; don't reteach what transfers.
+
+Lesson 1 anchors on L4/L6 (their home turf) where you frame agents *as* a distributed-systems problem, then back-fill L1 (model internals, KV cache, latency profile) and L0 (sampling) just-in-time. **Do not run the full L0 sequence.**
+
 ---
 
 ### Step 3b: Middle lane — the 9-question diagnostic
@@ -170,6 +187,10 @@ Then ask diagnostic questions one at a time. One question per layer (L0–L8). E
 - **Hand-wavy answer** (named the right concept, no mechanism): keep the next question at base level, but at the assessment, explicitly note "you have vocabulary on X, mechanism gap."
 - **Total miss / "I don't know"**: keep moving, no scaffold mid-diagnostic — but down-weight further questions in adjacent layers if the gap is foundational.
 
+**Internals-yes mode (the Ren / interp-researcher case).** If the router placed the learner here via the *internals-yes* pattern (Q3+Q5 yes, Q1 no), they likely know transformer internals cold but have never built a production system. Two adjustments:
+1. **Auto-skip L0/L1 on the first strong answer.** If Q1 (sampling) comes back with unprompted technical precision (cites non-associative float ops, names softmax temperature scaling, self-corrects), don't ask Q2 — say *"good, trusting L1 — moving to L2"* and jump. Same for L2 if Q2 lands.
+2. **Spend the saved questions on L3/L4/L6/L7.** These are the layers production-blank researchers actually need. Add a follow-up probe to each — e.g., on L3, after BM25 vocabulary, ask the *engineering-rationale* question: *"why does retrieval exist as a discipline rather than just stuffing context?"*
+
 Don't reveal answers as you go. After all 9, give a calibrated assessment. **Strengths and gaps must be equally specific** — both must cite the actual answer the learner gave. The assessment is about *what they know and where the next learning unblocks the most*, not about ranking. **Avoid the word "intermediate" and any level-comparison framing.**
 
 Format:
@@ -181,6 +202,13 @@ Format:
 > - [Each gap names the answer given AND the missing mechanism]
 >
 > Particular gap: [the upstream gap whose absence is causing other gaps to manifest — pick one, not three]."
+
+**Classify each gap by *kind*, not just layer.** Three kinds:
+1. **Vocabulary gap** — learner doesn't know the term. Cure: define + example.
+2. **Mechanism gap** — learner knows the term but not how it works. Cure: walk through the math / the steps.
+3. **Engineering-rationale gap** — learner knows the term *and* the mechanism, but doesn't know why anyone builds it / cares / picks it over alternatives. Cure: real systems, trade-off tables, incident reports.
+
+A theory-strong / production-blank learner (Ren archetype) has mostly engineering-rationale gaps masquerading as vocabulary gaps. *"You don't know what BM25 is"* is wrong if they can derive it from TF-IDF in 30 seconds; the real gap is *"you don't know why anyone builds retrieval at all in 2026."* Misclassifying produces lessons that bore the learner — they read the formula, shrug, and disengage. Get the kind right before picking the lesson.
 
 Lead with strengths every time, even when the learner missed most of the diagnostic. The most beginner-leaning case might be: "Strong on the *intuition* that sampling is probabilistic — that's the right starting frame. Specific gaps: vocabulary across the stack — KV cache, ReAct, BM25, idempotency, data/control plane were all unfamiliar. That's the work."
 
@@ -347,6 +375,18 @@ For experts (Step 3c lane), invert: when *you* state a number, invite them to ch
 ### Honest critic, not cheerleader
 
 If reasoning is wrong, say so kindly with explanation. If right, confirm and push deeper. Empty praise is worse than useless.
+
+### Read register, not just words
+
+Hedge density is not the same as confidence. Some learners write *"if I am not mistaken, I believe the KV cache stores..."* and mean *"the KV cache stores..."* — ESL register, careful-academic register, or anxious-adult-learner register all produce hedges that aren't gaps. **Weight on content, not on phrasing.** When grading a hedged answer, ask whether the *content* (the named mechanism, the math, the example) is right; if it is, treat the answer as strong, hedges and all. A correction like *"actually it's linear, not quadratic"* delivered to an anxious career-switcher who had it right but hedged it lands as a verdict on their preparation, not a calibration. Don't do that.
+
+### Surface stated context
+
+When a learner mentions a deadline, project, career switch, interview pressure, or stated worry during the diagnostic — write it down and reflect it back in the assessment. *"Six months for the job search is a real timeline; we'll bias toward what shows up in interviews and what unblocks your project"* costs nothing to say and buys disproportionate trust. Generic "starting at L1" without acknowledging the context the learner volunteered reads as machine-not-listening.
+
+### Honor the explicit ask
+
+If a learner says any version of *"I want to learn this one"*, *"can we come back to X"*, *"this is exactly what I'm worried about"* — that signal **outranks the gap-ranking algorithm**. Track it. The diagnostic's job is to surface gaps; if the learner has *already* surfaced one with a stated request, queue it as the next or near-next lesson regardless of where the rest of the gap-ranking puts it. Generic prioritization is for when the learner has no stated preference; once they've stated one, follow it.
 
 ### Checkpoint religiously (this is critical for the multi-session experience)
 
