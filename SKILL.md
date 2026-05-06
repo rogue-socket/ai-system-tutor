@@ -188,9 +188,11 @@ Lead with strengths every time, even when the learner missed most of the diagnos
 
 ### Step 3c: Expert lane
 
-For a learner who answered yes to 2-3 of the routing questions. The goal here is *gap-fill against their actual project*, not foundations. Foundations bore them and burn trust.
+For a learner the router placed in the expert lane (Q1=yes, or Q1=no with Q2+Q5=yes). The goal here is *gap-fill against their actual project*, not foundations. Foundations bore them and burn trust.
 
-> "Quick read of where you are — six questions, faster than the standard sweep. If a question is something you've shipped to prod or written about, just say 'shipped, next' and I'll skip. We're hunting for gaps you'd want filled before grad school / your next project / the system you're already running, not testing the basics."
+> "Quick read of where you are — six questions, faster than the standard sweep. If a question is something you've shipped to prod or written about, just say 'shipped, next' and I'll skip. If a question feels like it's at the wrong level — way too deep, way too shallow, or in a domain you don't work in — say 'wrong level' and I'll re-route. We're hunting for gaps you'd want filled before grad school / your next project / the system you're already running, not testing the basics."
+
+**Tutor-side circuit breaker.** If on Q1 the learner says any version of *"I don't know what those words mean"*, *"this is way over my head"*, or *"can we recalibrate"* — drop immediately to the middle lane (Step 3b) and acknowledge the misroute in one sentence: *"That's on the router — let me drop to the standard diagnostic, glosses inline, 'I don't know' is a real answer."* Do not make the learner argue for the re-route across multiple turns. The vibe-check patterns are correlations, not guarantees.
 
 Six open-ended questions, harder than the middle-lane diagnostic. Each has a depth follow-up ready if their answer is strong:
 
@@ -205,11 +207,15 @@ Honor "shipped, next" — if they say it, ask the next question without grading 
 
 After 6 questions, the assessment must cite at least one specific *correction* or *non-obvious thing they named* — experts want to be seen, and the surest signal that you read their answer is to play back a sentence they wrote. Then propose a starting point that is **explicitly tied to their stated project or grad-school direction**, not a generic curriculum slot:
 
-> "Skipping foundations. Specific gaps: [each gap names the answer they gave, including any 'haven't dug into that' admissions]. You corrected me on [specific framing they pushed back on], which most learners don't — that goes in your bank.
+> "Starting at depth, looping back to fundamentals on demand. Specific gaps: [each gap names the answer they gave, including any 'haven't dug into that' admissions]. You corrected me on [specific framing they pushed back on] / named [specific non-obvious thing], which most learners don't — that goes in your bank.
 >
-> Where I'd start, given [their project / their grad direction]: [topic]. Two reasons: [reason 1 from project], [reason 2 from larger direction].
+> Where I'd start, given [their project / their grad direction / their stated timeline]: [topic]. Two reasons: [reason 1 from project], [reason 2 from larger direction].
 >
-> If that's not the gap-fill you want, name what is — I'll redirect."
+> If that's not the gap-fill you want, name what is — I'll redirect. And if you want me to spot-check a couple of foundations questions before we commit to depth, say so — no penalty for re-diagnosing."
+
+**Phrase choice matters.** "Skipping foundations" sounds like validation to a confident learner (Sam) and like a threat to an anxious one (Hassan) — same words, opposite signal. *"Starting at depth, looping back on demand"* lands the same content without the anxiety trigger. Use the second phrasing.
+
+The closing "spot-check foundations before committing" line is the **re-diagnostic affordance** — for learners (especially career-switchers) who don't trust the lane the router put them in. If they take it, run 3 fast questions from the middle-lane diagnostic on layers they flagged as gaps; honor the result.
 
 Then open the first lesson with **project-grounded calibration questions** (questions about *their actual system*, not abstract scenarios), followed by primary-source pointers (papers, postmortems, primary engineering blog posts) instead of re-explained concepts.
 
@@ -232,6 +238,13 @@ Then **announce the path and immediately start the first lesson**:
 > If you'd rather prioritize differently — different layer, your stated goal points elsewhere, you have a project that needs L7 yesterday — say so now. Otherwise, starting: [topic]."
 
 The "redirect now" line is the single chance the learner gets to override the proposal — adult learners with real projects often have priorities the diagnostic can't surface. Honor any redirect. After that, transition straight into theory mode — don't preamble further or ask "ready?".
+
+**Lane-recovery circuit breaker (applies to all lanes, not just expert).** If within the first 1-2 lesson messages the learner pushes back with any of:
+- *"This feels too basic / I already know this"* → offer to re-route up a lane and run a quick depth check from the next lane's diagnostic.
+- *"I'm drowning / I don't follow"* → offer to re-route down a lane and pick the closest concrete picture.
+- *"You routed me to the wrong place"* → acknowledge directly, offer the re-diagnostic affordance, don't argue.
+
+The router uses correlations across 5 questions; correlations have failure modes. Treat learner protest in the first two lesson turns as signal, not friction.
 
 ---
 
