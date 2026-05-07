@@ -1,0 +1,14 @@
+[
+  {
+    "q": "Loop 2 used Gemini's native function-calling API to avoid brittle text parsing. Loop 3 goes back to parsing structured text from the model's output. Why is that not a regression?",
+    "answer_outline": "Loop 2's lesson was about structured output channels. Loop 3's lesson is about the *agent loop pattern* itself — reason-act-observe alternation, max-iteration caps, malformed-output recovery, premature-termination guards, the long-trace degradation. These failure modes belong to the loop, not to the parsing technique. Going back to text parsing strips away the comfort of native function calling so you feel the loop-level failure modes directly. Once you've felt them, you understand what frameworks (Loop 5+) are abstracting."
+  },
+  {
+    "q": "ReAct traces longer than ~10 iterations 'degrade.' What does that actually look like in a trace, and why does it happen?",
+    "answer_outline": "Symptoms in the trace: repeated identical actions, tools that don't exist getting called (hallucinations), observations the model invents instead of waiting for, off-topic Thoughts. The cause is context accumulation — every step's full T/A/O text is in the next call's history, so by step 12 the model is reasoning over a noisy context where its earlier mistakes are fully visible to itself. Long context also amplifies attention dilution (the relevant facts get drowned by procedural text). Mitigation is structural: cap iterations, summarize older trace steps, or switch to a framework with built-in scratchpad management."
+  },
+  {
+    "q": "What's the value of writing structured trace events to a file (your traces.py) instead of just printing to stdout?",
+    "answer_outline": "Three reasons. (1) You can read traces *after* the run finishes, including ones that crashed or hit Ctrl-C — stdout scrolls away, JSONL files don't. (2) Structured events let you query (grep, jq, custom analyzers) — 'how many actions did the model take?', 'how many errors?', 'which tool fired most often?'. (3) Reading a structured trace is the dominant agent-debugging skill in production — every observability platform (Langfuse, LangSmith, OTel for LLMs) is essentially a fancier version of your traces.jsonl. Building one by hand here means you understand what those tools are showing you."
+  }
+]
