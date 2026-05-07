@@ -48,20 +48,35 @@ Foundations-first source curriculum:
 
 ## Install
 
+### macOS / Linux
+
 ```sh
 git clone https://github.com/rogue-socket/ai-system-tutor ~/code/ai-system-tutor
 cd ~/code/ai-system-tutor
 ./install.sh
 ```
 
-`install.sh`:
+`install.sh` symlinks this repo into `~/.claude/skills/ai-systems-tutor/` so Claude Code auto-discovers the skill, then verifies `SKILL.md`, `AGENTS.md`, `references/`, and `assets/` are reachable.
 
-1. Symlinks this repo into `~/.claude/skills/ai-systems-tutor/` so Claude Code auto-discovers the skill.
-2. Verifies `SKILL.md`, `AGENTS.md`, `references/`, and `assets/` are reachable.
+### Windows (PowerShell, no admin needed)
 
-The script is bash. On Windows, run via WSL or Git Bash; the symlinking model assumes Unix-style filesystems. The skill itself is cross-platform once installed — `python` and `uv` work on all three OS families.
+```powershell
+git clone https://github.com/rogue-socket/ai-system-tutor $env:USERPROFILE\code\ai-system-tutor
+cd $env:USERPROFILE\code\ai-system-tutor
+.\install.ps1
+```
 
-For non-Claude-Code harnesses, you don't strictly need `install.sh` — you only need `AGENTS.md` reachable from the directory you run the agent in. See per-harness instructions below.
+`install.ps1` creates a directory junction at `%USERPROFILE%\.claude\skills\ai-systems-tutor` pointing at this repo. **Junctions don't require admin or Developer Mode** (unlike symbolic links), so this works on standard Windows installs.
+
+If PowerShell complains about execution policy:
+
+```powershell
+PowerShell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+### Non-Claude-Code harnesses
+
+You don't strictly need either install script — you only need `AGENTS.md` reachable from the directory you run the agent in. See per-harness instructions below.
 
 ## Usage
 
