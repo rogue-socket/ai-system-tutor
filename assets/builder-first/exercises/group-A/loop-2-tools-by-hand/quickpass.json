@@ -1,0 +1,14 @@
+[
+  {
+    "q": "Why does the regex-based JSON parsing in the starter fail unpredictably, even when the model is told the exact format to use?",
+    "answer_outline": "The system prompt is a strong nudge, not a constraint — the model's output channel is unconstrained text. Failure modes: model wraps the JSON in prose; model emits inline examples that get matched first; model omits keys; model puts strings where numbers go ('twelve' for 12); model emits multiple JSON blobs and the regex grabs only the first. Native function-calling APIs solve this by giving the model a structured output channel: function calls are a separate field in the response, schema-validated by the SDK, no regex parsing involved."
+  },
+  {
+    "q": "When a tool fails, what does the agent need to receive in order to recover gracefully? Compare an opaque error string ('error') to a descriptive one.",
+    "answer_outline": "Tool errors are part of the prompt — the model recovers based on what it reads. An opaque 'error' gives nothing to plan around; the model often retries the same broken call, gives up, or hallucinates an answer. A descriptive error names the failure (division by zero), states the constraint (cannot divide by zero), and points at a recovery (try a non-zero divisor). The model then plans around it and self-corrects on the next turn. Lesson: design tool error strings as carefully as you design system prompts, because functionally they are part of the prompt."
+  },
+  {
+    "q": "Why use Pydantic schemas for tool arguments, beyond 'nicer code'?",
+    "answer_outline": "Two load-bearing reasons. (1) Validation runs before your tool function executes, so wrong-typed args (model emits 'twelve' instead of 12) raise a structured ValidationError you can return to the model as the tool result — the model self-corrects next turn. Without Pydantic, the wrong arg either crashes your tool with a cryptic Python TypeError or silently produces garbage. (2) Pydantic models serialize to JSON Schema, which is the lingua franca that Gemini, OpenAI, and Anthropic SDKs all use to describe tools to the model. Learning Pydantic now means you can drop into any SDK or framework without re-learning schema definition."
+  }
+]
