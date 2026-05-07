@@ -1,0 +1,14 @@
+[
+  {
+    "q": "An agent has three kinds of memory in this loop — short-term (chat history), working (a dict scratchpad), and long-term (a JSON file). For each, when would you reach for it in a real agent design? Give one concrete example per kind.",
+    "answer_outline": "Short-term: the current turn's reasoning context — last few user-and-model exchanges, tool calls, observations. Lives only as long as the conversation. Example: a customer-support bot needs to know what the user just said three turns ago. Working: ephemeral within-session state the agent tracks across turns but doesn't need across sessions. Example: a counter, a partial computation, a current selection in a multi-step form. Long-term: facts that should survive script restart and follow the user across sessions. Example: the user's name, preferences, account ID, prior decisions. Vector memory (Loop 8) is a different axis — it's about *similarity-based retrieval over many entries*, orthogonal to the lifetime split here."
+  },
+  {
+    "q": "You hand-edit memory.json (no agent involved), restart the agent, and its behavior changes. Why does this matter beyond being convenient?",
+    "answer_outline": "It means agent state is not a black box — it's text in a file you can read, diff, version, share, debug, audit. Production implications: you can ship initial state for new users (seed the file), backup and restore an agent's state, replay a session by checking in the state at each step, and debug failures by reading state directly instead of stepping through code. The mental model 'an agent is a loop with manipulable state' beats 'an agent is a black box that does things' in every dimension that matters for shipping software."
+  },
+  {
+    "q": "Context compaction summarizes older messages when the conversation gets long. What can go wrong with naive compaction, and how would you mitigate it?",
+    "answer_outline": "Compaction can drop facts the agent later needs — a key the model was tracking, a constraint the user mentioned five turns ago, a tool result that's still relevant. Mitigations: (1) Tighten the summary prompt to explicitly preserve facts, decisions, and references to memory keys. (2) Use a hierarchical approach — keep recent N turns verbatim, summarize the next M, drop or aggressively compress beyond that. (3) Move durable facts into long-term memory via `remember` calls *before* compaction, so they survive even if the summary loses them. (4) Track what was in the conversation when compaction fires, and if the agent later asks for something that was dropped, surface 'this was earlier in the conversation; do you want to re-share?' Production agents typically use a combination of all four."
+  }
+]
