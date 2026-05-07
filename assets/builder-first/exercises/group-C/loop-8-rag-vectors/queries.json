@@ -1,0 +1,77 @@
+[
+  {
+    "query": "What database supports ACID transactions?",
+    "relevant": ["postgres", "acid"],
+    "type": "exact_term"
+  },
+  {
+    "query": "How does sharding work in distributed databases?",
+    "relevant": ["sharding", "consistent_hashing"],
+    "type": "exact_term"
+  },
+  {
+    "query": "Explain the CAP theorem",
+    "relevant": ["cap_theorem", "eventual_consistency"],
+    "type": "exact_term"
+  },
+  {
+    "query": "How do replicas stay consistent?",
+    "relevant": ["replication", "raft", "paxos", "eventual_consistency"],
+    "type": "synonym"
+  },
+  {
+    "query": "What's the algorithm behind keyword search?",
+    "relevant": ["bm25", "tfidf"],
+    "type": "exact_term"
+  },
+  {
+    "query": "How does semantic search work?",
+    "relevant": ["embeddings", "vector_search"],
+    "type": "synonym"
+  },
+  {
+    "query": "Probabilistic data structure for testing whether a key exists",
+    "relevant": ["bloom_filter"],
+    "type": "synonym"
+  },
+  {
+    "query": "Cache eviction policies",
+    "relevant": ["lru_cache", "redis"],
+    "type": "synonym"
+  },
+  {
+    "query": "How does Kafka achieve durability?",
+    "relevant": ["kafka", "replication"],
+    "type": "exact_term"
+  },
+  {
+    "query": "Inverted index ranking",
+    "relevant": ["bm25", "tfidf"],
+    "type": "synonym"
+  },
+  {
+    "query": "How can multiple machines agree on a single value despite failures?",
+    "relevant": ["raft", "paxos"],
+    "type": "paraphrase"
+  },
+  {
+    "query": "What database is good for caching?",
+    "relevant": ["redis"],
+    "type": "exact_term"
+  },
+  {
+    "query": "Why are dense retrievers better at paraphrases than BM25?",
+    "relevant": ["embeddings", "vector_search", "bm25"],
+    "type": "synonym"
+  },
+  {
+    "query": "B-tree vs hash index trade-offs",
+    "relevant": ["btree", "hash_index"],
+    "type": "exact_term"
+  },
+  {
+    "query": "Adding a new node to a distributed cache without rehashing everything",
+    "relevant": ["consistent_hashing", "redis"],
+    "type": "paraphrase"
+  }
+]

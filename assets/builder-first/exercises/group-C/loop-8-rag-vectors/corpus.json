@@ -1,0 +1,82 @@
+{
+  "postgres": {
+    "title": "PostgreSQL",
+    "text": "PostgreSQL is an open-source relational database supporting ACID transactions, MVCC concurrency, and rich SQL with joins. Ships with JSON columns and extensions like pgvector for vector search. Used widely for structured workloads requiring strong consistency."
+  },
+  "mongodb": {
+    "title": "MongoDB",
+    "text": "MongoDB is a document-oriented NoSQL database storing JSON-like BSON documents. Optimized for horizontal scaling via sharding. Trades strict relational integrity for flexibility and developer ergonomics."
+  },
+  "redis": {
+    "title": "Redis",
+    "text": "Redis is an in-memory key-value store often used for caching, session storage, rate limiting, and pub/sub. Sub-millisecond latency. Persistence via RDB snapshots or AOF append-only file."
+  },
+  "kafka": {
+    "title": "Apache Kafka",
+    "text": "Kafka is a distributed log used for event streaming. Producers append messages to partitioned topics; consumers read in order. Durability comes from replication across brokers; ordering is per-partition."
+  },
+  "acid": {
+    "title": "ACID Transactions",
+    "text": "ACID stands for atomicity, consistency, isolation, durability — the guarantees a transactional database makes. Atomic transactions either fully commit or fully roll back. Relational databases like Postgres enforce ACID by default; many NoSQL systems weaken these to scale."
+  },
+  "cap_theorem": {
+    "title": "CAP Theorem",
+    "text": "The CAP theorem says a distributed system cannot simultaneously guarantee consistency, availability, and partition tolerance. Under network partition, you choose between consistency and availability. Most modern systems pick AP or CP based on their workload."
+  },
+  "eventual_consistency": {
+    "title": "Eventual Consistency",
+    "text": "Eventual consistency means replicas converge to the same value if no new updates are made, but may temporarily disagree. Common in AP systems like DynamoDB and Cassandra. Trades strong guarantees for availability and lower latency."
+  },
+  "sharding": {
+    "title": "Database Sharding",
+    "text": "Sharding splits a dataset across multiple machines, with each machine holding one shard. The shard key determines placement. Horizontal scaling for write-heavy workloads; complicates queries that span shards."
+  },
+  "replication": {
+    "title": "Database Replication",
+    "text": "Replication keeps copies of data across multiple nodes for durability and read scaling. Synchronous replication waits for all replicas before acknowledging writes; asynchronous lets the primary ack first. Trade-off: consistency vs latency."
+  },
+  "btree": {
+    "title": "B-Tree Index",
+    "text": "B-trees are the dominant index structure in relational databases. Self-balancing, ordered, support range scans. Lookup, insert, delete are all O(log n). Ideal for workloads that need range queries."
+  },
+  "hash_index": {
+    "title": "Hash Index",
+    "text": "Hash indexes map a key to a bucket via a hash function. O(1) lookup for equality but no range queries. Postgres supports hash indexes but B-trees are usually preferred unless write throughput dominates."
+  },
+  "bm25": {
+    "title": "BM25 Algorithm",
+    "text": "BM25 is a probabilistic ranking function used in keyword search. Improves on TF-IDF by saturating term frequency and accounting for document length. Despite predating modern ML, BM25 remains a strong baseline for full-text retrieval."
+  },
+  "tfidf": {
+    "title": "TF-IDF",
+    "text": "TF-IDF weights terms by their frequency in a document divided by their frequency across the corpus. Common terms get low weight; rare distinctive terms get high weight. Foundational for the inverted-index family of search algorithms."
+  },
+  "embeddings": {
+    "title": "Vector Embeddings",
+    "text": "Embeddings map text or other data into dense vectors in a learned space where semantically similar items are nearby. Used for semantic search, clustering, classification. Distance is typically cosine similarity or dot product."
+  },
+  "vector_search": {
+    "title": "Vector Search and ANN",
+    "text": "Vector search finds the nearest neighbors of a query vector in a high-dimensional embedding space. Exact nearest-neighbor is O(n*d); approximate nearest-neighbor (ANN) algorithms like HNSW trade a small accuracy loss for sublinear lookup."
+  },
+  "raft": {
+    "title": "Raft Consensus",
+    "text": "Raft is a consensus algorithm for replicated state machines, designed to be more understandable than Paxos. Elects a leader; followers replicate the leader's log. Used by etcd, Consul, CockroachDB."
+  },
+  "paxos": {
+    "title": "Paxos Consensus",
+    "text": "Paxos is a family of consensus protocols for distributed agreement on a value despite failures. Notoriously hard to implement correctly. Multi-Paxos and Fast Paxos are common variants. Largely supplanted by Raft for new systems."
+  },
+  "consistent_hashing": {
+    "title": "Consistent Hashing",
+    "text": "Consistent hashing maps keys to nodes on a ring; adding or removing a node only remaps a small fraction of keys. Used in distributed caches and databases (Cassandra, DynamoDB) to minimize rebalancing on cluster changes."
+  },
+  "lru_cache": {
+    "title": "LRU Cache",
+    "text": "Least-recently-used (LRU) cache eviction discards the entry untouched for the longest. Implemented with a hash map plus a doubly-linked list for O(1) operations. Variants include LFU (least-frequently-used) and TTL-based caches."
+  },
+  "bloom_filter": {
+    "title": "Bloom Filter",
+    "text": "A Bloom filter is a probabilistic data structure for membership testing. False positives are possible; false negatives are not. Multiple hash functions over a bit array. Used for fast 'is this key absent?' checks before expensive lookups."
+  }
+}
