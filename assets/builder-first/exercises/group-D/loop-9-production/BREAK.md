@@ -5,8 +5,11 @@ Switch to **Group D**:
 ```bash
 cd ~/ai-systems/exercises/group-D
 uv sync     # ~30s, no torch
-source .venv/bin/activate    # macOS / Linux
-# .venv\Scripts\activate     # Windows PowerShell
+# macOS / Linux:
+source .venv/bin/activate
+
+# Windows PowerShell:
+# .venv\Scripts\activate
 ```
 
 This is the densest loop in builder-first. **14–18 hours of work.** One sub-topic per session is the right pace; trying to one-shot it will burn you out.

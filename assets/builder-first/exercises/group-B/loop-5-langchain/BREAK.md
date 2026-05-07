@@ -5,8 +5,11 @@ You're now in **Group B**. Switch venvs first:
 ```bash
 cd ~/ai-systems/exercises/group-B
 uv sync
-source .venv/bin/activate    # macOS / Linux
-# .venv\Scripts\activate     # Windows PowerShell
+# macOS / Linux:
+source .venv/bin/activate
+
+# Windows PowerShell:
+# .venv\Scripts\activate
 ```
 
 Verify with `python -c "import langchain; print(langchain.__version__)"` — should print `0.3.29`.

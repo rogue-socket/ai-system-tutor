@@ -5,8 +5,11 @@ Switch to **Group C** first:
 ```bash
 cd ~/ai-systems/exercises/group-C
 uv sync   # heavy: torch ~2GB on first sync, 5–15 min on slow connections
-source .venv/bin/activate    # macOS / Linux
-# .venv\Scripts\activate     # Windows PowerShell
+# macOS / Linux:
+source .venv/bin/activate
+
+# Windows PowerShell:
+# .venv\Scripts\activate
 ```
 
 If you don't want the torch download (Stage 5 needs it for cross-encoder reranking), defer Stage 5 — Stages 1–4 use Gemini embeddings + chromadb + rank-bm25 only, no torch.
