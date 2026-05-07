@@ -50,7 +50,7 @@ The setup must run in under 5 minutes for a learner with a working Python instal
 
 ### Step 0b — Get a Gemini API key
 
-Documented in detail at `setup/get-gemini-key.md` (asset). Click-path:
+Documented in detail at `setup/README.md` (asset, section 2). Click-path:
 
 1. Go to `https://aistudio.google.com/apikey`.
 2. Click "Create API key" → pick a project (or create one).
@@ -94,7 +94,7 @@ When a learner picks `builder_first` in Step 2.5 of `SKILL.md`, the lane's diagn
 >
 > First, 10 minutes of setup — install `uv`, get a Gemini key, run a sanity check. Then Loop 1: the dumbest possible agent, ~30 lines. Sound good?"
 
-If they confirm, run setup via `setup/install-uv.sh` + `setup/get-gemini-key.md` + `setup/sanity_check.py` (in that order). On sanity check pass, open `loop-1-bare-loop/agent.py` in the learner's editor and start.
+If they confirm, walk them through `setup/README.md` (three steps: install `uv`, get a Gemini key, `uv sync` Group A + run `setup/sanity_check.py`). On sanity check pass, open `loop-1-bare-loop/agent.py` in the learner's editor and start.
 
 If they want to redirect (e.g. "skip Loop 1, I've done this") — that's `/loop quickpass` for proof-of-knowledge or `/loop 2` to jump. Honor it.
 
@@ -421,7 +421,7 @@ A one-time SDK-import-and-attribute drift pass was run against fresh `uv sync` v
 - [ ] **Detours catalog + `/path` command.** `references/detours.md` with 12-15 named paths (`rag-agent`, `coding-agent`, `interview-prep`, `mcp-server`, `evals-deep-dive`, `prompt-injection-redteam`, `multi-agent`, `cost-optimization`, `observability`, `fine-tuning-domain`, `voice-agent`, `browser-agent`, `data-extraction-agent`). Each: ordered layer-section sequence, what to skip, exit criteria. Wired through `/path [name]` in SKILL.md's override map. Originally in the user's 6-point list as item 3; deferred during the loop build.
 - [x] **HTML viewer for notes / cheatsheets / flashcards** — *shipped 2026-05-08*. `assets/index.html` + `assets/manifest.json`, copied to workspace at first-time onboarding. Single-file viewer (vanilla JS + marked@12 from jsdelivr CDN), served via `python -m http.server` from the workspace. Three tabs: Notes (markdown render), Cheatsheets (markdown render), Flashcards (click-to-flip + Space/←/→ keyboard). Reads `manifest.json` for content discovery; tutor appends entries when notes / cheatsheets / flashcard decks are generated. Smoke-tested end-to-end against a populated test workspace: all paths (manifest, markdown, flashcard JSON) serve correctly. Browser-side JS rendering validated by inspection only — first real-learner walkthrough should confirm visual presentation. Supports legacy flashcard formats (front/back, q/a, q/answer_outline) so existing `quickpass.json` files render directly.
 - [x] **Slash-command surfacing at first-time onboarding** — *shipped 2026-05-08*. `assets/COMMANDS.md` now ships and gets copied to `~/ai-systems/COMMANDS.md` at first-time onboarding (SKILL.md Step 1 sub-step 6). After workspace setup, the tutor announces the commands as a one-paragraph briefing (slash + natural-language overrides + pointer to the full file). Warm Resume on a 14+ day gap also adds a one-line reminder. Originally in the user's 6-point list as item 1.
-- [ ] `setup/LOOP_VERSIONS.md` — version manifest with the 6-month refresh cadence. Cheap (~15 min) — already referenced by builder-first.md but not written.
+- [x] `setup/LOOP_VERSIONS.md` — version manifest with the 6-month refresh cadence. Shipped 2026-05-07.
 - [ ] `setup/llm.py` — optional model-agnostic wrapper. Introduce in Loop 2 if a learner asks for it; not strictly needed since each loop uses its provider directly.
 
 **Pending — quality concerns (not blocking, worth knowing):**
