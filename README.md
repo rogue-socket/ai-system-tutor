@@ -2,6 +2,8 @@
 
 A portable, agent-driven course on **AI systems engineering and agentic workflows**. Modeled on the [system-design-tutor](https://github.com/anthropics/skills) pattern, built to run in any tool-using agent — Claude Code, OpenAI Codex CLI, GitHub Copilot CLI, Cursor, Aider, anywhere with file-read + file-write + shell.
 
+> **On Windows?** → start with **[WINDOWS-QUICKSTART.md](WINDOWS-QUICKSTART.md)**. 5 steps, ~10 minutes, fresh-clone to running tutor.
+
 The skill OWNS the curriculum: it onboards you (with optional **builder-first** code-first orientation), drives lessons, schedules spaced-repetition reviews, runs practical exercises, and checkpoints state across sessions. You steer when you want a detour; the default is forward motion.
 
 ## Two orientations, one curriculum
