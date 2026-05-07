@@ -1,0 +1,13 @@
+[project]
+name = "ai-systems-tutor-group-a"
+version = "0.1.0"
+description = "Builder-first Loops 1-4 — bare LLM stack (Gemini, no frameworks)"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "google-genai>=0.8,<2.0",
+    "python-dotenv>=1.0,<2.0",
+    "pydantic>=2.0,<3.0",
+]
+
+[tool.uv]
+package = false
