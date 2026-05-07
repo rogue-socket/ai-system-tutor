@@ -1,0 +1,9 @@
+[
+  {
+    "_comment": "One example case showing the schema. Delete this comment field and write 20 real cases. Reuse Loop 9's run_offline.py shape — numeric scorer for fact lookups, judge scorer for free-form.",
+    "question": "<the input the agent receives>",
+    "expected": "<the expected answer (string for numeric) OR rubric (description for judge)>",
+    "scorer": "numeric",
+    "tags": ["happy_path", "v1_must_pass"]
+  }
+]
