@@ -1,0 +1,12 @@
+[
+  {"question": "What is 12 + 7?", "expected": "19", "scorer": "numeric"},
+  {"question": "Multiply 9 by 11", "expected": "99", "scorer": "numeric"},
+  {"question": "What's 25% of 80?", "expected": "20", "scorer": "numeric"},
+  {"question": "Compute 100 - 33", "expected": "67", "scorer": "numeric"},
+  {"question": "What is 2 to the 8th power?", "expected": "256", "scorer": "numeric"},
+  {"question": "If x + 7 = 15, what's x?", "expected": "8", "scorer": "numeric"},
+  {"question": "Briefly explain the CAP theorem.", "expected": "mentions consistency, availability, and partition tolerance, and explains the trade-off under network partition", "scorer": "judge"},
+  {"question": "What database is good for caching, and why?", "expected": "mentions Redis (or another in-memory key-value store), explains low latency / fast access as the reason", "scorer": "judge"},
+  {"question": "Why is BM25 still a strong retrieval baseline despite predating modern ML?", "expected": "mentions term frequency, inverse document frequency, and that it remains competitive on keyword-style queries", "scorer": "judge"},
+  {"question": "What's a Bloom filter used for?", "expected": "mentions probabilistic membership testing, possible false positives but no false negatives", "scorer": "judge"}
+]
