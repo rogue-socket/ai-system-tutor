@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Systems Tutor — Workspace Viewer</title>
+<style>
+  :root {
+    --fg: #1a1a1a;
+    --muted: #666;
+    --accent: #0066cc;
+    --border: #ddd;
+    --bg-soft: #f6f6f7;
+    --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--fg);
+    margin: 0;
+    background: var(--bg-soft);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  h1 { margin: 0 0 0.25rem; }
+  .sub { color: var(--muted); margin: 0 0 1rem; }
+  .banner {
+    background: #fff8e1;
+    border: 1px solid #f5d889;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+  }
+  .banner code { background: #f3e6b3; padding: 0.05rem 0.3rem; border-radius: 3px; }
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  nav button {
+    background: none;
+    border: none;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    font: inherit;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+  }
+  nav button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  aside {
+    background: var(--bg-soft);
+    border-right: 1px solid var(--border);
+    padding: 0.75rem;
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+  aside ul { list-style: none; padding: 0; margin: 0; }
+  aside li { margin: 0.15rem 0; }
+  aside a {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    color: var(--fg);
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+  aside a .path { color: var(--muted); font-size: 0.78rem; display: block; }
+  aside a:hover { background: rgba(0,0,0,0.04); }
+  aside a.active { background: var(--accent); color: #fff; }
+  aside a.active .path { color: rgba(255,255,255,0.8); }
+  main {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    max-height: 75vh;
+  }
+  main h1, main h2, main h3 { margin-top: 1.2rem; }
+  main pre {
+    background: #f3f4f6;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+  main code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.9em; }
+  main pre code { background: none; padding: 0; }
+  main table { border-collapse: collapse; margin: 1rem 0; }
+  main td, main th { border: 1px solid var(--border); padding: 0.4rem 0.7rem; text-align: left; }
+  main th { background: var(--bg-soft); }
+  main blockquote { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); margin: 1rem 0; }
+  .empty { color: var(--muted); font-style: italic; padding: 1rem; }
+  /* Flashcards */
+  .deck-info { color: var(--muted); margin-bottom: 0.75rem; }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+    min-height: 220px;
+    background: var(--card);
+    cursor: pointer;
+    user-select: none;
+    transition: box-shadow 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .card .face { display: none; max-width: 600px; }
+  .card.show-front .front { display: block; }
+  .card.show-back .back { display: block; text-align: left; font-size: 1rem; }
+  .card-controls {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .card-controls button {
+    padding: 0.5rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .card-controls button:hover { background: var(--bg-soft); }
+  .hint { color: var(--muted); font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
+  @media print {
+    aside, nav, .banner { display: none; }
+    .layout { border: none; }
+    main { max-height: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>AI Systems Tutor — Workspace Viewer</h1>
+<p class="sub">Renders your notes, cheatsheets, and flashcards from this workspace.</p>
+
+<div class="banner" id="serve-hint">
+  Run from this workspace root: <code>python -m http.server 8000</code> — then refresh this page at <code>http://localhost:8000</code>. (Opening this file directly via <code>file://</code> won't work — browsers block <code>fetch()</code> from disk.)
+</div>
+
+<nav>
+  <button data-tab="notes" class="active">Notes</button>
+  <button data-tab="cheatsheets">Cheatsheets</button>
+  <button data-tab="flashcards">Flashcards</button>
+</nav>
+
+<div class="layout">
+  <aside><ul id="file-list"><li class="empty">Loading…</li></ul></aside>
+  <main id="content"><p class="empty">Select an item from the left.</p></main>
+</div>
+
+</div>
+
+<!-- Marked: small markdown→HTML renderer, ~30KB. CDN-hosted; works offline once cached. -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+let manifest = null;
+let currentTab = 'notes';
+let currentPath = null;
+
+function setBanner(text) {
+  const b = document.getElementById('serve-hint');
+  if (b) b.textContent = text;
+}
+
+async function loadManifest() {
+  try {
+    const res = await fetch('manifest.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    manifest = await res.json();
+    document.getElementById('serve-hint').style.display = 'none';
+  } catch (e) {
+    setBanner(`Could not load manifest.json (${e.message}). Make sure you ran "python -m http.server 8000" in your workspace root and accessed this page via http://localhost:8000.`);
+    manifest = { notes: [], cheatsheets: [], flashcards: [] };
+  }
+}
+
+function refreshList() {
+  const items = (manifest && manifest[currentTab]) || [];
+  const list = document.getElementById('file-list');
+  list.innerHTML = '';
+  if (items.length === 0) {
+    list.innerHTML = `<li class="empty">No ${currentTab} yet. Your tutor populates this as you go — say "/notes &lt;topic&gt;" or finish a loop.</li>`;
+    document.getElementById('content').innerHTML = `<p class="empty">No ${currentTab} to show.</p>`;
+    return;
+  }
+  items.forEach(item => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.innerHTML = `${escapeHTML(item.title || item.path)}<span class="path">${escapeHTML(item.path)}</span>`;
+    a.href = '#' + item.path;
+    if (item.path === currentPath) a.classList.add('active');
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('aside a').forEach(x => x.classList.remove('active'));
+      a.classList.add('active');
+      currentPath = item.path;
+      loadItem(item);
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function loadItem(item) {
+  const main = document.getElementById('content');
+  main.innerHTML = '<p class="empty">Loading…</p>';
+  try {
+    const res = await fetch(item.path, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if (currentTab === 'flashcards') {
+      const cards = JSON.parse(text);
+      renderFlashcards(item, cards, main);
+    } else {
+      const html = (typeof marked !== 'undefined') ? marked.parse(text) : `<pre>${escapeHTML(text)}</pre>`;
+      main.innerHTML = html;
+    }
+  } catch (e) {
+    main.innerHTML = `<p class="empty">Failed to load ${escapeHTML(item.path)} — ${escapeHTML(e.message)}</p>`;
+  }
+}
+
+function renderFlashcards(item, cards, container) {
+  if (!Array.isArray(cards) || cards.length === 0) {
+    container.innerHTML = '<p class="empty">No flashcards in this deck.</p>';
+    return;
+  }
+  let i = 0;
+
+  function show() {
+    const c = cards[i];
+    // Support multiple naming conventions: front/back, q/a, q/answer_outline
+    const front = c.front || c.q || c.question || '(no front)';
+    const back = c.back || c.a || c.answer || c.answer_outline || '(no back)';
+    container.innerHTML = `
+      <div class="deck-info">${escapeHTML(item.title || item.path)} — Card ${i+1} of ${cards.length}</div>
+      <div class="card show-front" id="card">
+        <div class="face front">${escapeHTML(String(front))}</div>
+        <div class="face back">${(typeof marked !== 'undefined') ? marked.parse(String(back)) : escapeHTML(String(back))}</div>
+      </div>
+      <div class="card-controls">
+        <button id="prev">← Prev</button>
+        <button id="flip">Flip</button>
+        <button id="next">Next →</button>
+      </div>
+      <div class="hint">Click the card or press Space to flip. ← → for prev/next.</div>
+    `;
+    const card = document.getElementById('card');
+    card.addEventListener('click', flip);
+    document.getElementById('prev').addEventListener('click', prev);
+    document.getElementById('next').addEventListener('click', next);
+    document.getElementById('flip').addEventListener('click', flip);
+  }
+  function flip() {
+    const card = document.getElementById('card');
+    if (!card) return;
+    card.classList.toggle('show-front');
+    card.classList.toggle('show-back');
+  }
+  function prev() { i = (i - 1 + cards.length) % cards.length; show(); }
+  function next() { i = (i + 1) % cards.length; show(); }
+
+  // Keyboard
+  document.onkeydown = (e) => {
+    if (currentTab !== 'flashcards') return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === 'Space') { e.preventDefault(); flip(); }
+    else if (e.code === 'ArrowLeft') prev();
+    else if (e.code === 'ArrowRight') next();
+  };
+
+  show();
+}
+
+document.querySelectorAll('nav button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentTab = b.dataset.tab;
+    currentPath = null;
+    refreshList();
+    document.getElementById('content').innerHTML = `<p class="empty">Select an item from the left.</p>`;
+  });
+});
+
+(async () => {
+  await loadManifest();
+  refreshList();
+})();
+</script>
+</body>
+</html>
