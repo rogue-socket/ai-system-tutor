@@ -1,0 +1,18 @@
+[project]
+name = "ai-systems-tutor-group-c"
+version = "0.1.0"
+description = "Builder-first Loop 8 — RAG with vectors (sparse, dense, hybrid, reranking)"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    # All of Group A
+    "google-genai>=0.8,<2.0",
+    "python-dotenv>=1.0,<2.0",
+    "pydantic>=2.0,<3.0",
+    # Retrieval stack introduced in this group
+    "chromadb>=0.5,<2.0",        # local vector store
+    "rank-bm25>=0.2,<0.3",        # BM25 sparse retrieval
+    "sentence-transformers>=3.0,<6.0",  # cross-encoder reranking — pulls torch ~2GB
+]
+
+[tool.uv]
+package = false
