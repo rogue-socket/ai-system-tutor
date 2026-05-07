@@ -1,0 +1,6 @@
+{
+  "_comment": "Index for ~/ai-systems/index.html viewer. The tutor maintains this — appends new entries when notes/cheatsheets/flashcards are generated. Each entry: { path: <relative-to-workspace>, title: <display-title>, added: <YYYY-MM-DD> }.",
+  "notes": [],
+  "cheatsheets": [],
+  "flashcards": []
+}
