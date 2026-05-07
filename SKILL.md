@@ -49,6 +49,10 @@ After your opening proposal, if the user explicitly says "actually, I want to do
 | `/continue` | Resume from `session-state.md` |
 | `/notes [topic]` | Generate or update topic notes |
 | `/config` | Show or edit learner profile in `progress.json` |
+| `/loop list` *(builder-first only)* | Print all 10 loops with status (see `references/builder-first.md`) |
+| `/loop [n]` *(builder-first only)* | Jump to loop N; warn on missing prereqs but honor override |
+| `/loop skip` *(builder-first only)* | Skip current loop after a 30-second summary; mark `skipped` |
+| `/loop quickpass` *(builder-first only)* | 3 quiz questions from the loop's WIN criteria; pass = `done`, miss = run loop |
 
 ---
 
@@ -63,10 +67,18 @@ Tell the user what you're doing, briefly:
 > "Setting up your AI systems course at `~/ai-systems/`. One moment."
 
 Then:
-1. Create `~/ai-systems/` and subdirectories: `notes/`, `notes/diagrams/`, `exercises/`, `reviews/`, `flashcards/`, `meta/`.
+1. Create `~/ai-systems/` and subdirectories: `notes/`, `notes/diagrams/`, `cheatsheets/`, `exercises/`, `reviews/`, `flashcards/`, `meta/`.
 2. Copy the file at `<skill-dir>/assets/workspace-README.md` to `~/ai-systems/README.md`.
 3. Initialize `~/ai-systems/progress.json` from `<skill-dir>/assets/progress-template.json`, filling in `started` (today's date), `preferred_language` ("python"). Leave `level` blank — the lane router (Step 2) sets it.
 4. Initialize `~/ai-systems/session-state.md` (see `references/session-control.md` for schema).
+5. Copy `<skill-dir>/assets/index.html` to `~/ai-systems/index.html` and `<skill-dir>/assets/manifest.json` to `~/ai-systems/manifest.json`. This is the workspace viewer — learners run `python -m http.server 8000` from the workspace and open `http://localhost:8000` in a browser to read their notes / cheatsheets / flashcards as a styled, navigable site. The tutor appends to `manifest.json` whenever a note, cheatsheet, or flashcard deck is generated.
+6. Copy `<skill-dir>/assets/COMMANDS.md` to `~/ai-systems/COMMANDS.md`. Reference card for slash commands and natural-language overrides. The learner runs `cat ~/ai-systems/COMMANDS.md` anytime to refresh on what's available.
+
+After workspace setup completes, **announce the commands briefly** (don't dump the whole `COMMANDS.md` into the chat). One paragraph:
+
+> "Your workspace is at `~/ai-systems/`. Quick reference: `/plan` shows where you are, `/quiz` runs reviews, `/notes <topic>` generates notes, `/continue` resumes, `pause` ends the session cleanly. Plain English works too — *'teach me X'* etc. Full command list at `~/ai-systems/COMMANDS.md`. Now, the diagnostic."
+
+Then proceed to Step 2 (lane routing).
 
 `<skill-dir>` is wherever this skill is installed — for Claude Code that's `~/.claude/skills/ai-systems-tutor/`; for other harnesses it's wherever you cloned the source.
 
@@ -117,6 +129,40 @@ Walk the patterns top-down; first match wins.
 **Override.** If the learner says "I want a different lane than that," tell them which lane the patterns suggested and why, then honor the override. The vibe check is a default, not a verdict.
 
 Set `level` in `progress.json` to one of: `beginner` / `bridge` / `middle` / `expert` / `non_coder`.
+
+---
+
+### Step 2.5: Pick the orientation (how to walk the course)
+
+**Skip this for the expert and non-coder lanes.** Expert is already depth-first / project-grounded by design; non-coder is concept-only. For those, set `orientation` in `progress.json` to `n/a` and continue to Step 3.
+
+For **beginner / bridge / middle**, the lane decided *where to start*; the orientation decides *how to walk*. The router routes by experience shape; a learner with little experience may still want hands-on momentum over a foundations sweep, and a learner with adjacent experience may want foundations explicitly. Don't infer it — ask.
+
+> "One more pick. How do you want to walk the course?
+>
+> - **Foundations-first** (the tutor's default). We walk L0 → L8. Mental models first — what a model actually is, why it's probabilistic, what tokens are — then build agents on top. Slower start, sturdier base. Best if you want to understand what you're using before you use it.
+> - **Builder-first**. Lesson 1 ships a small working agent — ~30 lines, Anthropic SDK (or LangChain if you prefer), tool-use loop. Lesson 2 breaks it on purpose. Foundations get filled in *as the agent breaks* — context limits when it forgets mid-loop, embeddings when retrieval fails, evals when it silently regresses. Faster momentum. The risk is cargo-culting framework code without understanding the loop, so the spiral-back to foundations is mandatory, not optional.
+>
+> Either works. If unsure, pick foundations-first."
+
+Save to `progress.json` as `learner.orientation` — one of `foundations_first` | `builder_first`.
+
+**If `builder_first`, copy the path's scaffolding into the workspace now.** Recursively copy everything under `<skill-dir>/assets/builder-first/` into `~/ai-systems/`, preserving structure. Concretely the learner ends up with:
+- `~/ai-systems/.env.example` (they `cp` to `.env` in setup step 2)
+- `~/ai-systems/setup/README.md` and `setup/sanity_check.py`
+- `~/ai-systems/exercises/group-A/pyproject.toml`
+- `~/ai-systems/exercises/group-A/loop-1-bare-loop/{agent.py, BREAK.md, WIN.md, NOTES.md, CHEATSHEET.md, quickpass.json}`
+
+(More groups and loops land under `assets/builder-first/` over time. The copy step is recursive — it picks up whatever is shipped at the time the learner onboards.)
+
+After copying, point them at `~/ai-systems/setup/README.md` for the three setup steps. Don't run setup commands for them — installing `uv` and creating `.env` is theirs to do; the tutor coaches when they hit a snag.
+
+#### How orientation modifies each lane
+
+- **`foundations_first`**: run the lane as written below. Beginner gets the "language model is a giant function" opener; bridge gets the transferable-vs-breaks framing; middle runs the 9-question diagnostic and starts at the lowest weak layer.
+- **`builder_first`**: still run the lane's diagnostic — you need to know what they know to know which break to lean on later — but the curriculum walk itself follows the **10-loop builder-first spec** in `references/builder-first.md`. Load that file when `orientation = builder_first` and use it as the path. Default Gemini, four group venvs, structured FAFO per loop. The lane's diagnostic still tells you which sub-topics to skim vs deep-dive within each loop.
+
+The builder-first path is **not** a license to skip foundations — it's a different *order*. Foundations get filled in as the agent breaks, mid-loop. By the end of the curriculum, both orientations cover similar ground (with documented scope reductions in the builder-first spec); builder-first reaches it via failures, foundations-first via prerequisites.
 
 ---
 
@@ -252,7 +298,7 @@ Then open the first lesson with **project-grounded calibration questions** (ques
 ### Step 4: Decide the path and start the first lesson
 
 Based on the diagnostic:
-- Pick the first topic. Almost always either the lowest-tier weak area, or the next prerequisite of their stated goal.
+- Pick the first topic. Almost always either the lowest-tier weak area, or the next prerequisite of their stated goal. **If `orientation = builder_first`**, Lesson 1 is the tracer-bullet build (per Step 2.5); the diagnostic-flagged gap becomes Lesson 2's intentional break, not Lesson 1's topic.
 - Save findings to `~/ai-systems/notes/diagnostic-YYYY-MM-DD.md`.
 - Update `progress.json` with topic statuses based on diagnostic answers.
 - Seed initial entries in the spaced-repetition queue (`sr_queue` in `progress.json`) for topics they got wrong.
@@ -297,6 +343,8 @@ The standard "user is back" flow. Detailed protocol is in `references/session-co
 5. Execute. Don't preamble more once they confirm.
 
 If the gap is 14+ days, suggest a brief review session first.
+
+**Long-gap reminder (when gap is ≥14 days).** Add a one-line nudge to the welcome paragraph: *"Reminder: `/plan`, `/quiz`, `/notes`, `/continue`, plus `pause` to stop. Full list at `~/ai-systems/COMMANDS.md`."* Skip this on shorter gaps to avoid noise.
 
 ---
 
@@ -542,6 +590,7 @@ Load only when the relevant mode is active:
 - `references/incidents.md` — real-world agent failures and case studies, by topic
 - `references/spaced-repetition.md` — `progress.json` schema, SM-2 lite math
 - `references/session-control.md` — session pause/resume, context management protocols, `session-state.md` schema
+- `references/builder-first.md` — 10-loop builder-first path spec (load when `learner.orientation = builder_first`); covers setup, group venvs, per-loop break/win, skip mechanism, dependency map
 
 ## Asset files
 
