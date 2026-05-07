@@ -70,7 +70,7 @@ Builder-first uses **four group venvs**, not per-loop. Loops share environments 
 | **C** | 8 | + `chromadb`, `rank-bm25`, `sentence-transformers` |
 | **D** | 9, 10 | + `fastapi`, `uvicorn`, `httpx`, `prometheus-client` |
 
-Each group lives at `~/ai-systems/exercises/group-{A,B,C,D}/` with its own `pyproject.toml` and `uv.lock`. Activate with `cd ~/ai-systems/exercises/group-A && source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows). The tutor announces the group switch when the learner crosses a boundary.
+Each group lives at `~/ai-systems/exercises/group-{A,B,C,D}/` with its own `pyproject.toml` and `uv.lock`. Activation is two separate commands: `cd` into the group dir, then `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows PowerShell). The tutor announces the group switch when the learner crosses a boundary.
 
 ### Step 0d — Sanity check
 

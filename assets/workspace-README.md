@@ -66,7 +66,9 @@ In any agent harness (Claude Code, Codex, Copilot CLI, etc.), invoke the tutor w
 
 - If `progress.json` gets corrupted, the skill will refuse to start. Restore from your last git commit (you DID `git init` this dir, right?), or delete `progress.json` and re-run the diagnostic.
 - If `session-state.md` is missing, the skill falls back to "Cold Resume" — short rediagnostic, then continues.
-- If the whole workspace is broken, `rm -rf ~/ai-systems` and run `start the AI systems tutor` again. Your repo source-of-truth is the skill itself, not this workspace.
+- If the whole workspace is broken, delete `~/ai-systems` and run `start the AI systems tutor` again. Your repo source-of-truth is the skill itself, not this workspace.
+  - macOS / Linux: `rm -rf ~/ai-systems`
+  - Windows PowerShell: `Remove-Item -Recurse -Force $env:USERPROFILE\ai-systems`
 
 ## Versioning your workspace
 

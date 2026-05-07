@@ -10,7 +10,7 @@
 - `curl localhost:8000/health` — health check
 - `curl localhost:8000/stats` — session totals (Stage 3)
 - `curl localhost:8000/metrics` — prometheus (Stage 6)
-- `docker build -t loop-9 . && docker run -p 8000:8000 -e GEMINI_API_KEY=$GEMINI_API_KEY loop-9` — local docker
+- `docker build -t loop-9 .` then `docker run -p 8000:8000 -e GEMINI_API_KEY=$GEMINI_API_KEY loop-9` — local docker (Linux/macOS env-var; on Windows PowerShell use `$env:GEMINI_API_KEY`)
 - `gcloud run deploy ... --source .` — Cloud Run deploy
 
 ## Patterns

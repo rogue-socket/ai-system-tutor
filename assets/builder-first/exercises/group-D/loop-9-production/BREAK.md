@@ -166,7 +166,7 @@ docker run -p 8000:8000 -e GEMINI_API_KEY=$GEMINI_API_KEY loop-9-agent
 
 Then deploy. Easy options:
 - **Cloud Run:** `gcloud run deploy loop-9-agent --source . --set-env-vars GEMINI_API_KEY=...`
-- **Fly.io:** `fly launch --no-deploy && fly secrets set GEMINI_API_KEY=...; fly deploy`
+- **Fly.io:** `fly launch --no-deploy`, then `fly secrets set GEMINI_API_KEY=...`, then `fly deploy` (three separate commands; `&&` chaining doesn't work in PowerShell 5.1)
 - **Modal / Railway / Render:** similar shapes.
 
 Each provides an HTTPS URL. Confirm with `curl https://your-url/health`.

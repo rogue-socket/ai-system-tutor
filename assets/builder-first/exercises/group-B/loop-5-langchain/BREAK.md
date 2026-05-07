@@ -81,12 +81,15 @@ Now the load-bearing lesson of Loop 5. Tools don't have to live in your codebase
 Use `langchain-mcp-adapters` (already in Group B):
 
 ```python
+import sys
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
 
 # Spawn the server as a subprocess and load its tools.
-server_params = StdioServerParameters(command="python", args=["mcp_server.py"])
+# Use sys.executable (not the literal "python") so it works on Windows
+# regardless of how Python was installed.
+server_params = StdioServerParameters(command=sys.executable, args=["mcp_server.py"])
 async with stdio_client(server_params) as (read, write):
     async with ClientSession(read, write) as session:
         await session.initialize()

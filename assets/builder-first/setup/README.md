@@ -52,11 +52,18 @@ The `.env` file is git-ignored — don't commit it.
 
 Group A is the venv for Loops 1–4. Install once:
 
+**macOS / Linux:**
 ```bash
 cd ~/ai-systems/exercises/group-A
 uv sync
-source .venv/bin/activate    # macOS/Linux
-# .venv\Scripts\activate     # Windows PowerShell
+source .venv/bin/activate
+```
+
+**Windows PowerShell:**
+```powershell
+cd $env:USERPROFILE\ai-systems\exercises\group-A
+uv sync
+.venv\Scripts\activate
 ```
 
 Then sanity-check that Gemini works:
@@ -82,4 +89,4 @@ When it passes, you're ready for Loop 1.
 
 ## Switching groups later
 
-When you reach Loop 5, you'll switch to Group B's venv. The tutor will tell you when. Same flow as Group A — `cd ~/ai-systems/exercises/group-B && uv sync && source .venv/bin/activate`.
+When you reach Loop 5, you'll switch to Group B's venv. The tutor will tell you when. Same flow as Group A — three commands (`cd` to the new group dir, `uv sync`, then activate the venv with the OS-appropriate script).

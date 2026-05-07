@@ -8,8 +8,11 @@ your colleague's. The protocol is the boundary.
 Run standalone (for testing the server alone):
     python mcp_server.py
 
-Or have your agent spawn it (Stage 5):
-    StdioServerParameters(command="python", args=["mcp_server.py"])
+Or have your agent spawn it (Stage 5). Use `sys.executable` rather than the
+literal string "python" so it works on Windows (where `python` may map to
+the Microsoft Store launcher) and on systems with multiple Pythons:
+    import sys
+    StdioServerParameters(command=sys.executable, args=["mcp_server.py"])
 """
 import random
 

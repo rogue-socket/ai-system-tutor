@@ -55,7 +55,7 @@ Run the eval harness on every meaningful change. *"This change improved pass-rat
 
 Lift Loop 9's Dockerfile. Deploy to Cloud Run / Fly / Render. The HTTPS URL is part of the WIN criteria — the tutor will hit it.
 
-If your project is a CLI (Option E sometimes), "deploy" means it runs reliably on a fresh machine — `git clone && uv sync && python ...` works without surprises. Document the steps in README.
+If your project is a CLI (Option E sometimes), "deploy" means it runs reliably on a fresh machine — `git clone <url>`, `cd <repo>`, `uv sync`, `python ...` (each as a separate command; works in every shell). Document the steps in README.
 
 ## Step 6 — README (1 hour)
 

@@ -10,7 +10,7 @@
 
 `https://<your-deployed-instance>` — try it: `curl -X POST <url>/query -H 'content-type: application/json' -d '{"question":"..."}'`
 
-(Or for batch agents: `git clone <url> && cd <repo> && uv sync && python run.py samples/`)
+(Or for batch agents, four commands: `git clone <url>`, `cd <repo>`, `uv sync`, `python run.py samples/`.)
 
 ## Quickstart (run locally)
 
