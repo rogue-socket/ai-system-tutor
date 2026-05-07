@@ -173,6 +173,8 @@
 
 <!-- Marked: small markdown→HTML renderer, ~30KB. CDN-hosted; works offline once cached. -->
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<!-- DOMPurify: sanitizes rendered markdown so a learner-authored .md file can't run scripts. -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <script>
 let manifest = null;
 let currentTab = 'notes';
@@ -226,6 +228,12 @@ function escapeHTML(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function renderMarkdown(text) {
+  if (typeof marked === 'undefined') return `<pre>${escapeHTML(text)}</pre>`;
+  const raw = marked.parse(text);
+  return (typeof DOMPurify !== 'undefined') ? DOMPurify.sanitize(raw) : raw;
+}
+
 async function loadItem(item) {
   const main = document.getElementById('content');
   main.innerHTML = '<p class="empty">Loading…</p>';
@@ -237,8 +245,7 @@ async function loadItem(item) {
       const cards = JSON.parse(text);
       renderFlashcards(item, cards, main);
     } else {
-      const html = (typeof marked !== 'undefined') ? marked.parse(text) : `<pre>${escapeHTML(text)}</pre>`;
-      main.innerHTML = html;
+      main.innerHTML = renderMarkdown(text);
     }
   } catch (e) {
     main.innerHTML = `<p class="empty">Failed to load ${escapeHTML(item.path)} — ${escapeHTML(e.message)}</p>`;
@@ -261,7 +268,7 @@ function renderFlashcards(item, cards, container) {
       <div class="deck-info">${escapeHTML(item.title || item.path)} — Card ${i+1} of ${cards.length}</div>
       <div class="card show-front" id="card">
         <div class="face front">${escapeHTML(String(front))}</div>
-        <div class="face back">${(typeof marked !== 'undefined') ? marked.parse(String(back)) : escapeHTML(String(back))}</div>
+        <div class="face back">${renderMarkdown(String(back))}</div>
       </div>
       <div class="card-controls">
         <button id="prev">← Prev</button>

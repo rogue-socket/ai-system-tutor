@@ -97,6 +97,20 @@ PowerShell -ExecutionPolicy Bypass -File .\install.ps1
 
 You don't strictly need either install script — you only need `AGENTS.md` reachable from the directory you run the agent in. See per-harness instructions below.
 
+### Uninstall
+
+The install scripts only create a symlink (macOS/Linux) or directory junction (Windows) — they don't copy files, so removing the link uninstalls the skill. Your workspace at `~/ai-systems/` is untouched and you can delete it separately.
+
+**macOS / Linux:**
+```bash
+rm ~/.claude/skills/ai-systems-tutor
+```
+
+**Windows (PowerShell):**
+```powershell
+(Get-Item "$env:USERPROFILE\.claude\skills\ai-systems-tutor").Delete()
+```
+
 ## Usage
 
 ### Claude Code
