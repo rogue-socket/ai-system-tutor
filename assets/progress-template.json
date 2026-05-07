@@ -5,6 +5,8 @@
   "learner": {
     "_level_comment": "Set by the lane router (SKILL.md Step 2). One of: beginner | bridge | middle | expert | non_coder.",
     "level": null,
+    "_orientation_comment": "Set by Step 2.5 for beginner/bridge/middle lanes. One of: foundations_first | builder_first | n/a (for expert/non_coder).",
+    "orientation": null,
     "preferred_language": "python",
     "stated_goal": null,
     "diagnostic_summary": null
@@ -87,6 +89,24 @@
   "exercises": {
     "_comment": "Append-only log of exercises. Each entry: { date, topic, dir, status, takeaways }.",
     "entries": []
+  },
+  "builder_first": {
+    "_comment": "Only populated if learner.orientation = builder_first. Tracks per-loop progression. See references/builder-first.md for the loop spec.",
+    "current_loop": null,
+    "current_group": null,
+    "loops": {
+      "loop_1_bare_loop":          {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_2_tools_by_hand":      {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_3_react_by_hand":      {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_4_agent_state":        {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_5_langchain":          {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_6_langgraph":          {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_7a_single_agent_arch": {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_7b_multi_agent_arch":  {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_8_rag_vectors":        {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_9_production":         {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false},
+      "loop_10_capstone":          {"status": "not_started", "started": null, "completed": null, "skipped": false, "quickpassed": false}
+    }
   },
   "reviews": {
     "_comment": "Append-only log of mock interviews and design reviews.",
