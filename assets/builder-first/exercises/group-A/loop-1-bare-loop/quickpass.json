@@ -1,0 +1,14 @@
+[
+  {
+    "q": "Why does the same prompt give different outputs across runs in agent.py? What knob would you turn to make it (mostly) deterministic?",
+    "answer_outline": "Sampling is stochastic — the model picks the next token from a probability distribution, not always the highest-probability token. Turn temperature down toward 0 for greedy decoding (closest to deterministic). Even at temperature=0, GPU non-associative float ops can produce small variations across runs. Some APIs accept a fixed seed for further reproducibility."
+  },
+  {
+    "q": "On turn 2 of your loop, you ask 'what did I just say?' and the model answers correctly. What change in your code makes that work — and what would happen if you skipped it?",
+    "answer_outline": "You feed the entire conversation history (all prior user and model messages) back in the contents argument every turn. The model is stateless between calls — it has no memory of previous API requests. If you skip the history, every turn is a cold start; the model can't reference anything you said before. The 'memory' is the conversation list that you maintain in Python and re-send."
+  },
+  {
+    "q": "What's time-to-first-token (TTFT) versus total response latency, and why does enabling streaming improve UX without changing total response time?",
+    "answer_outline": "TTFT is the time until the model emits its first output token — bounded by prefill (processing your input). Total latency is TTFT plus generation time (decoding tokens one at a time). Streaming lets you display tokens as they arrive, which makes the UX feel responsive even though the model takes the same total time to finish. Streaming is a UX win, not a latency win."
+  }
+]
