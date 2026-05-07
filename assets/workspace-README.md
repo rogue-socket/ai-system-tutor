@@ -11,13 +11,31 @@ You don't need to edit anything by hand. The skill writes here on every meaningf
 ├── README.md             ← this file
 ├── progress.json         ← learner profile, topic statuses, SR queue, session/exercise/review logs
 ├── session-state.md      ← last-session checkpoint (where you left off, what's next)
+├── index.html            ← workspace viewer (open with `python -m http.server 8000`)
+├── manifest.json         ← index for the viewer; tutor maintains
+├── COMMANDS.md           ← slash commands and natural-language overrides cheat-sheet
 ├── notes/                ← one .md per topic + diagnostic-YYYY-MM-DD.md
 │   └── diagrams/         ← interactive HTML diagrams generated during lessons
+├── cheatsheets/          ← one .md per topic, short-form reference
 ├── exercises/            ← one dir per dated exercise: YYYY-MM-DD-<topic-slug>/
 ├── reviews/              ← mock interviews and design reviews: YYYY-MM-DD-<system>.md
 ├── flashcards/           ← one .json per topic
 └── meta/                 ← logs, traces, anything not user-facing
 ```
+
+## Viewing your notes / cheatsheets / flashcards
+
+Run from this directory:
+
+```bash
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000` in any browser. You'll see a styled, navigable view of your notes, cheatsheets, and flashcards — the same files the tutor wrote to disk, just renderable. Three tabs (Notes / Cheatsheets / Flashcards) with click-to-flip on flashcards.
+
+The viewer reads `manifest.json` to discover content. The tutor maintains it: every time a new note, cheatsheet, or flashcard deck is generated, it's appended to the manifest. You don't edit the manifest by hand.
+
+If you've shipped a builder-first loop, the per-loop `NOTES.md` and `CHEATSHEET.md` files in `exercises/group-X/loop-N-<slug>/` show up in the viewer too.
 
 ## What's in each file
 
