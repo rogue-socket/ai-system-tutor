@@ -1,10 +1,27 @@
 # ai-system-tutor
 
-A portable, agent-driven course on **AI systems engineering and agentic workflows**. Modeled on the [system-design-tutor](https://github.com/anthropics/skills) pattern, built to run in any tool-using agent — Claude Code, OpenAI Codex CLI, GitHub Copilot CLI, Cursor, Aider, anywhere with file-read + file-write + shell.
+A portable, agent-driven course on **AI systems engineering and agentic workflows** — runs in Claude Code, Codex CLI, Copilot CLI, Cursor, Aider, anywhere with file-read + file-write + shell.
 
-> **On Windows?** → start with **[WINDOWS-QUICKSTART.md](WINDOWS-QUICKSTART.md)**. 5 steps, ~10 minutes, fresh-clone to running tutor.
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue) ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey) ![License](https://img.shields.io/badge/license-MIT-green) ![Loops](https://img.shields.io/badge/builder--first-10%20loops-orange) ![Free tier](https://img.shields.io/badge/Gemini-free%20tier-yellow) ![Status](https://img.shields.io/badge/status-v1-brightgreen)
+
+> **On Windows?** Start with **[WINDOWS-QUICKSTART.md](WINDOWS-QUICKSTART.md)** — 5 steps, ~10 minutes, fresh-clone to running tutor.
+>
+> **On macOS or Linux?** Jump to [Install](#install).
 
 The skill OWNS the curriculum: it onboards you (with optional **builder-first** code-first orientation), drives lessons, schedules spaced-repetition reviews, runs practical exercises, and checkpoints state across sessions. You steer when you want a detour; the default is forward motion.
+
+Modeled on the [system-design-tutor](https://github.com/anthropics/skills) pattern.
+
+## Contents
+
+- [Two orientations, one curriculum](#two-orientations-one-curriculum)
+- [Requirements](#requirements)
+- [Install](#install)
+- [Usage](#usage) — Claude Code · Codex CLI · Copilot CLI · Cursor · Aider · paste-as-prompt
+- [Slash commands](#slash-commands)
+- [Repo layout](#repo-layout)
+- [Workspace layout](#workspace-layout-after-first-run)
+- [Troubleshooting](#troubleshooting)
 
 ## Two orientations, one curriculum
 
@@ -244,3 +261,17 @@ python -m http.server 8000
 - **Workspace viewer shows "Could not load `manifest.json`":** you opened `index.html` via `file://`. Browsers block `fetch()` from disk. Run `python -m http.server 8000` from the workspace root and open `http://localhost:8000`.
 - **Skill not auto-discovered in Claude Code:** check `~/.claude/skills/ai-systems-tutor/SKILL.md` exists (symlink or real file). If symlink is broken, re-run `./install.sh`.
 - **Codex / Copilot CLI doesn't pick up `AGENTS.md`:** ensure you're in a directory where `AGENTS.md` is reachable (real file or symlink). `ls -la AGENTS.md` should show it.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## Acknowledgements
+
+- The [AI System Engineer](https://rogue-socket.github.io/AI-System-Engineer/) syllabus — the foundations-first curriculum.
+- [Lilian Weng's "LLM Powered Autonomous Agents"](https://lilianweng.github.io/posts/2023-06-23-agent/) — the agent-loop framing throughout.
+- [Anthropic's engineering blog](https://www.anthropic.com/engineering) — practical agent patterns + Model Context Protocol.
+- [OpenAI cookbook](https://cookbook.openai.com/) — tool use, structured output, evals.
+- [Hugging Face Agents course](https://huggingface.co/learn/agents-course) — open-weight agent stack.
+- [OWASP Agentic AI Top 10](https://genai.owasp.org/) — threat modeling.
+- The [system-design-tutor](https://github.com/anthropics/skills) — pattern this skill is modeled on.
