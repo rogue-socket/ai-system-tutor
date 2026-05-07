@@ -1,0 +1,25 @@
+[project]
+name = "ai-systems-tutor-group-b"
+version = "0.1.0"
+description = "Builder-first Loops 5-7 — LangChain, LangGraph, MCP, agent architectures"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    # All of Group A
+    "google-genai>=0.8,<2.0",
+    "python-dotenv>=1.0,<2.0",
+    "pydantic>=2.0,<3.0",
+    # Frameworks introduced in this group
+    "langchain>=0.3,<0.5",
+    "langchain-google-genai>=2.0,<3.0",
+    "langgraph>=0.2,<0.5",
+    # Model Context Protocol Python SDK (Loop 5).
+    # langchain-mcp-adapters >=0.2.0 requires langchain-core >=0.4 (uses messages.content);
+    # pin <0.2 to stay compatible with langchain-core 0.3.x.
+    "mcp>=1.0,<2.0",
+    "langchain-mcp-adapters>=0.1,<0.2",
+    # Optional: lets langgraph's compiled.get_graph().draw_ascii() work (Loop 6 stretch).
+    "grandalf>=0.8,<1.0",
+]
+
+[tool.uv]
+package = false
