@@ -20,7 +20,8 @@ cd <project>
 cp .env.example .env  # add GEMINI_API_KEY
 cd exercises/group-<X>
 uv sync
-source .venv/bin/activate
+source .venv/bin/activate    # macOS / Linux
+# .venv\Scripts\activate     # Windows PowerShell
 # Run command — uvicorn / python / whatever
 ```
 

@@ -2,6 +2,8 @@
 
 Three steps. ~10 minutes. Do them once, in order.
 
+> **Path note for Windows users.** These instructions use Unix-style paths (`~/ai-systems`). On Windows PowerShell 5.1+, `~` expands to `$env:USERPROFILE`, so `cd ~/ai-systems` works directly. On Windows cmd, replace with `%USERPROFILE%\ai-systems\`. Forward-slashes in paths work in both shells. The activation command `source .venv/bin/activate` (Linux/macOS) becomes `.venv\Scripts\activate` on Windows.
+
 ## 1. Install `uv`
 
 `uv` is the Python package manager builder-first uses. One command:
