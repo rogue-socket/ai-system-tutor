@@ -10,10 +10,33 @@ python setup/bootstrap.py
 ```
 
 That script handles:
-1. `uv` install if missing (non-interactive prompt if you allow it)
+1. `uv` install if missing (or a fail-fast path with `--non-interactive`)
 2. `.env` setup from `.env.example`
-3. `GEMINI_API_KEY` capture
+3. `GEMINI_API_KEY` and `GOOGLE_API_KEY` capture
 4. Group A install + sanity check
+
+If you already ran setup successfully, add `--fast`:
+
+```bash
+python setup/bootstrap.py --fast
+```
+
+Use `--force` to re-run sync/sanity, `--dry-run` to preview, or `--non-interactive` when you want fail-fast behavior in scripts.
+
+If bootstrap fails, stay in setup mode and use the exact recovery command from the failure text.
+Common recovery when key input is missing:
+
+```bash
+export GEMINI_API_KEY=AIza...
+export GOOGLE_API_KEY=$GEMINI_API_KEY
+python setup/bootstrap.py --non-interactive --force
+```
+
+```bash
+python setup/bootstrap.py --dry-run
+```
+
+If it still fails, the tutor uses `setup/README.md` and `setup/sanity_check.py` recovery text directly next.
 
 If you prefer manual steps, continue below.
 
@@ -51,7 +74,6 @@ What you'll provide here is a credential for your local workspace, not a passwor
 2. Sign in with any Google account.
 3. Click **"Create API key"**. Pick or create a project — "Generative Language Client" is the default and works fine.
 4. Copy the resulting key string now (format starts with `AIza...`).
-4. Copy the key. It looks like `AIzaSy...` (~39 characters).
 
 Save it in your workspace:
 
@@ -66,7 +88,22 @@ Open `.env` and replace the placeholder with your real key:
 GEMINI_API_KEY=AIzaSy...your-real-key
 ```
 
-The `.env` file is git-ignored — don't commit it. If you are running `python setup/bootstrap.py`, you can paste it when prompted instead of editing this file directly.
+The `.env` file is git-ignored — don't commit it.
+
+Bootstrap writes both keys:
+
+```
+GEMINI_API_KEY=...
+GOOGLE_API_KEY=...
+```
+
+If you run bootstrap in a non-interactive flow:
+
+```bash
+export GEMINI_API_KEY=AIza...
+export GOOGLE_API_KEY=$GEMINI_API_KEY
+python setup/bootstrap.py --non-interactive
+```
 
 ### Free tier (as of 2026-05)
 
@@ -98,7 +135,7 @@ python setup/group_env.py --group A --run python setup/sanity_check.py
 
 Expected output:
 ```
-Found GEMINI_API_KEY (length 39).
+Found API key (length 39).
 Making one test call to gemini-2.0-flash...
 Response: OK
 PASS: Gemini works. Setup is complete.
@@ -106,8 +143,17 @@ PASS: Gemini works. Setup is complete.
 
 If you see `FAIL`, the script tells you what's wrong. Common causes:
 - `.env` not at `~/ai-systems/.env` → check the path
-- Key copied with extra whitespace → re-copy carefully
+- key copied with extra whitespace → re-copy carefully
 - 403 / billing error → re-create the key in AI Studio
+- uv path mismatch / shell cache → restart shell and rerun
+
+If bootstrap fails on key setup, keep the same error in your session and run exactly:
+
+```bash
+export GEMINI_API_KEY=AIza...
+export GOOGLE_API_KEY=$GEMINI_API_KEY
+python setup/bootstrap.py --non-interactive --force
+```
 
 When it passes, you're ready for Loop 1.
 

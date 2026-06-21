@@ -3,16 +3,16 @@
 You're now in **Group B**. Switch venvs first:
 
 ```bash
-cd ~/ai-systems/exercises/group-B
-uv sync
-# macOS / Linux:
-source .venv/bin/activate
-
-# Windows PowerShell:
-# .venv\Scripts\activate
+python ~/ai-systems/setup/group_env.py --group B
 ```
 
-Verify with `python -c "import langchain; print(langchain.__version__)"` — should print `0.3.29`.
+Verify with:
+
+```bash
+python ~/ai-systems/setup/group_env.py --group B --run python -c "import langchain; print(langchain.__version__)"
+```
+
+Should print `0.3.29`.
 
 The starter is a minimal LangChain agent with one tool (`calculator`) and no memory. It runs. The compare-to-Loop-4 reflection is the load-bearing exercise — you'll find that this code is shorter than Loop 4's, and you'll find that some things you understood deeply in Loop 4 are now hidden behind framework abstractions. That trade-off is the lesson.
 
@@ -21,7 +21,7 @@ The starter is a minimal LangChain agent with one tool (`calculator`) and no mem
 ## Run it first
 
 ```bash
-python langchain_agent.py
+python ~/ai-systems/setup/group_env.py --group B --run python langchain_agent.py
 ```
 
 Try:

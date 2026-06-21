@@ -71,8 +71,8 @@ Then:
 2. Copy the file at `<skill-dir>/assets/workspace-README.md` to `~/ai-systems/README.md`.
 3. Initialize `~/ai-systems/progress.json` from `<skill-dir>/assets/progress-template.json`, filling in `started` (today's date), `preferred_language` ("python"). Leave `level` blank — the lane router (Step 2) sets it.
 4. Initialize `~/ai-systems/session-state.md` (see `references/session-control.md` for schema).
-5. Copy `<skill-dir>/assets/index.html` to `~/ai-systems/index.html` and `<skill-dir>/assets/manifest.json` to `~/ai-systems/manifest.json`. This is the workspace viewer — learners run `python -m http.server 8000` from the workspace and open `http://localhost:8000` in a browser to read their notes / cheatsheets / flashcards as a styled, navigable site. The tutor appends to `manifest.json` whenever a note, cheatsheet, or flashcard deck is generated.
-6. Copy `<skill-dir>/assets/COMMANDS.md` to `~/ai-systems/COMMANDS.md`. Reference card for slash commands and natural-language overrides. The learner runs `cat ~/ai-systems/COMMANDS.md` anytime to refresh on what's available.
+5. Copy `<skill-dir>/assets/index.html` to `~/ai-systems/index.html`, `<skill-dir>/assets/manifest.json` to `~/ai-systems/manifest.json`, and `<skill-dir>/assets/viewer.py` to `~/ai-systems/viewer.py`. This is the workspace viewer — learners run `python viewer.py` from the workspace and open `http://localhost:8000` in a browser to read their notes / cheatsheets / flashcards as a styled, navigable site. The tutor appends to `manifest.json` whenever a note, cheatsheet, or flashcard deck is generated.
+6. Copy `<skill-dir>/assets/COMMANDS.md` to `~/ai-systems/COMMANDS.md` and `<skill-dir>/assets/practical-setup.py` to `~/ai-systems/practical-setup.py`. Reference card for slash commands and natural-language overrides, plus one-command practical exercise bootstrap in the workspace.
 
 After workspace setup completes, **announce the commands briefly** (don't dump the whole `COMMANDS.md` into the chat). One paragraph:
 
@@ -148,14 +148,21 @@ For **beginner / bridge / middle**, the lane decided *where to start*; the orien
 Save to `progress.json` as `learner.orientation` — one of `foundations_first` | `builder_first`.
 
 **If `builder_first`, copy the path's scaffolding into the workspace now.** Recursively copy everything under `<skill-dir>/assets/builder-first/` into `~/ai-systems/`, preserving structure. Concretely the learner ends up with:
-- `~/ai-systems/.env.example` (they `cp` to `.env` in setup step 2)
-- `~/ai-systems/setup/README.md` and `setup/sanity_check.py`
+- `~/ai-systems/.env.example`
+- `~/ai-systems/setup/bootstrap.py`, `setup/group_env.py`, `setup/README.md`, and `setup/sanity_check.py`
 - `~/ai-systems/exercises/group-A/pyproject.toml`
 - `~/ai-systems/exercises/group-A/loop-1-bare-loop/{agent.py, BREAK.md, WIN.md, NOTES.md, CHEATSHEET.md, quickpass.json}`
 
 (More groups and loops land under `assets/builder-first/` over time. The copy step is recursive — it picks up whatever is shipped at the time the learner onboards.)
 
-After copying, point them at `~/ai-systems/setup/README.md` for the three setup steps. Don't run setup commands for them — installing `uv` and creating `.env` is theirs to do; the tutor coaches when they hit a snag.
+After copying, run `python ~/ai-systems/setup/bootstrap.py`.
+That helper handles the non-learning setup (uv install, key file + value, Group A `uv sync`, sanity check).
+If it fails, the tutor stays in teaching mode and immediately gives explicit recovery steps from `setup/README.md`:
+- if the error is key-related:
+  - `python setup/bootstrap.py --non-interactive --force`
+- if uv is missing in a non-interactive shell:
+  - install uv manually, then rerun `python setup/bootstrap.py --fast`
+- for all other failures, rerun bootstrap and surface the exact `FAIL:` line before moving on.
 
 #### How orientation modifies each lane
 

@@ -41,9 +41,38 @@ Every exercise lives in `~/ai-systems/exercises/YYYY-MM-DD-<topic-slug>/`:
 [2-3 sentences. What runs, what it shows.]
 
 ## Setup
+
+Run from your workspace root:
+
 ```bash
-pip install httpx pydantic openai
-export OPENAI_API_KEY=...
+cd ~/ai-systems
+python practical-setup.py
+```
+
+By default this installs `httpx`, `pydantic`, `openai`, `anthropic`, `numpy`.
+If your exercise needs a provider key, add it with `--require-key`:
+
+```bash
+python practical-setup.py --require-key OPENAI_API_KEY
+```
+
+If your exercise uses multiple keys, either repeat the flag or pass a comma-separated list:
+
+```bash
+python practical-setup.py --require-key OPENAI_API_KEY --require-key ANTHROPIC_API_KEY
+python practical-setup.py --require-key OPENAI_API_KEY,ANTHROPIC_API_KEY
+```
+
+For non-interactive runs (CI, scripts), pass the key values up front and use `--non-interactive`:
+
+```bash
+OPENAI_API_KEY=... ANTHROPIC_API_KEY=... python practical-setup.py --non-interactive --require-key OPENAI_API_KEY --require-key ANTHROPIC_API_KEY
+```
+
+To preview what the script will do without writing files or installing deps:
+
+```bash
+python practical-setup.py --dry-run --require-key OPENAI_API_KEY
 ```
 
 ## Tasks

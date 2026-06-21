@@ -10,19 +10,23 @@
 
 `https://<your-deployed-instance>` — try it: `curl -X POST <url>/query -H 'content-type: application/json' -d '{"question":"..."}'`
 
-(Or for batch agents, four commands: `git clone <url>`, `cd <repo>`, `uv sync`, `python run.py samples/`.)
+(Or for batch agents, four commands: `git clone <url>`, `cd <repo>`, `uv sync`, `uv run python run.py samples/`.)
 
 ## Quickstart (run locally)
 
 ```bash
 git clone <url>
 cd <project>
-cp .env.example .env  # add GEMINI_API_KEY
+cp .env.example .env  # or set GEMINI_API_KEY in your environment
+
+# Preferred (if your project ships the curriculum setup scripts):
+python setup/bootstrap.py
+python setup/group_env.py --group <X> --run python run.py samples/
+
+# Legacy fallback:
 cd exercises/group-<X>
 uv sync
-source .venv/bin/activate    # macOS / Linux
-# .venv\Scripts\activate     # Windows PowerShell
-# Run command — uvicorn / python / whatever
+uv run python run.py samples/
 ```
 
 ## Architecture

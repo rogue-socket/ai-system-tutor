@@ -3,13 +3,7 @@
 Switch to **Group D**:
 
 ```bash
-cd ~/ai-systems/exercises/group-D
-uv sync     # ~30s, no torch
-# macOS / Linux:
-source .venv/bin/activate
-
-# Windows PowerShell:
-# .venv\Scripts\activate
+python ~/ai-systems/setup/group_env.py --group D
 ```
 
 This is the densest loop in builder-first. **14–18 hours of work.** One sub-topic per session is the right pace; trying to one-shot it will burn you out.
@@ -20,10 +14,10 @@ The starter is the agent equivalent of a demo: a FastAPI server wrapping a singl
 
 ```bash
 # Terminal 1
-uvicorn app:app --port 8000
+python ~/ai-systems/setup/group_env.py --group D --run python -m uvicorn app:app --port 8000
 
 # Terminal 2
-python load_test.py
+python ~/ai-systems/setup/group_env.py --group D --run python load_test.py
 ```
 
 You'll see at minimum:

@@ -5,20 +5,24 @@ Runs the following:
 1. Ensures Python is supported (3.11, 3.12, or 3.13).
 2. Ensures `uv` is available (installs with pip if missing and interactive approval).
 3. Creates/refreshes `~/ai-systems/.env` from `.env.example`.
-4. Guides API-key onboarding and populates `GEMINI_API_KEY` from env var or prompt.
+4. Guides API-key onboarding and populates `GEMINI_API_KEY` + `GOOGLE_API_KEY` from env var or prompt.
 5. Runs `uv sync` in Group A.
 6. Runs `setup/sanity_check.py` in Group A.
+7. Skips sync and sanity if already complete when `--fast` is enabled.
 
 This keeps friction out of learner setup while keeping loop content untouched.
 """
 
 from __future__ import annotations
 
+import argparse
+import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Sequence
 
@@ -27,28 +31,66 @@ Command = list[str]
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Builder-first bootstrap.")
+    parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help="Fail fast if setup requires a user prompt.",
+    )
+    parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Skip sync and sanity when setup is already current.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force dependency/sanity refresh even when cache says ready.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the plan and skip all side effects.",
+    )
+    args = parser.parse_args()
+
     workspace = (Path(__file__).resolve().parent.parent).expanduser()
     group_a = workspace / "exercises" / "group-A"
+    state_file = workspace / ".bootstrap-state.json"
 
     print("Builder-first setup bootstrap")
     print(f"Workspace: {workspace}")
 
+    if args.dry_run:
+        print("DRY RUN: no files will be written, no commands will execute.")
+        _print_bootstrap_plan()
+        return 0
+
     if not _check_python_version():
         return 1
 
-    uv = _ensure_uv()
+    uv = _ensure_uv(non_interactive=args.non_interactive)
     if uv is None:
         print("Could not find/install `uv`.")
         print("Manual fallback: install uv from https://astral.sh/uv and re-run this script.")
         return 1
 
-    if not _ensure_env_file(workspace):
+    key = _ensure_env_file(workspace, interactive=not args.non_interactive)
+    if not key:
         return 1
+
+    if args.fast and not args.force and _is_already_bootstrap_ready(group_a, state_file, uv, key):
+        print("Builder-first setup already complete. Re-run with --force to refresh uv/sanity.")
+        return 0
 
     if not _run_uv_sync(uv, group_a):
         return 1
 
-    return _run_sanity_check(uv, workspace, group_a)
+    if _run_sanity_check(uv, workspace, group_a) != 0:
+        return 1
+
+    _write_bootstrap_state(state_file, uv, group_a, key)
+    return 0
 
 
 def _check_python_version() -> bool:
@@ -65,13 +107,13 @@ def _check_python_version() -> bool:
     return True
 
 
-def _ensure_uv() -> Optional[Command]:
+def _ensure_uv(non_interactive: bool) -> Optional[Command]:
     uv = shutil.which("uv")
     if uv:
         print(f"OK: uv found ({uv})")
         return [uv]
 
-    if not sys.stdin.isatty():
+    if non_interactive:
         print("WARN: uv not found and this session is non-interactive.")
         return None
 
@@ -101,39 +143,44 @@ def _ensure_uv() -> Optional[Command]:
     return [uv]
 
 
-def _ensure_env_file(workspace: Path) -> bool:
+def _ensure_env_file(workspace: Path, interactive: bool) -> Optional[str]:
     env_example = workspace / ".env.example"
     env_path = workspace / ".env"
 
     if not env_example.exists():
         print(f"FAIL: missing {env_example}")
-        return False
+        return None
 
     existing_key = _read_key_from_env(env_path)
     if existing_key:
         print(f"OK: using existing key from {env_path}")
-        return True
+        return existing_key
 
     if key := _resolve_api_key_from_context():
         print(f"OK: using API key from environment ({len(key)} chars)")
         content = env_path.read_text() if env_path.exists() else env_example.read_text()
         _write_key(content, env_path, key)
         print(f"Wrote key to {env_path}")
-        return True
+        return key
 
     _print_api_key_setup()
-    if not sys.stdin.isatty():
-        return False
+    if not interactive:
+        print("WARN: API key is required in non-interactive mode.")
+        print("Set both keys first, then rerun exactly:")
+        print("  export GEMINI_API_KEY=<your_key>")
+        print("  export GOOGLE_API_KEY=$GEMINI_API_KEY")
+        print("  python setup/bootstrap.py --non-interactive --force")
+        return None
 
     key = input("Paste your Gemini API key and press Enter: ").strip()
     if not _looks_like_key(key):
         print("That key looks empty or invalid. Please rerun and paste a full key.")
-        return False
+        return None
 
     content = env_path.read_text() if env_path.exists() else env_example.read_text()
     _write_key(content, env_path, key)
     print(f"Wrote key to {env_path}")
-    return True
+    return key
 
 
 def _resolve_api_key_from_context() -> Optional[str]:
@@ -152,14 +199,18 @@ def _read_key_from_env(path: Path) -> Optional[str]:
     if not path.exists():
         return None
 
+    google_only = None
     for line in path.read_text().splitlines():
-        if not line.startswith("GEMINI_API_KEY="):
-            continue
-        value = line.split("=", 1)[1].strip().strip('"\'')
-        if _looks_like_key(value):
-            return value
-        return None
-    return None
+        if line.startswith("GEMINI_API_KEY="):
+            value = line.split("=", 1)[1].strip().strip("\"'")
+            if _looks_like_key(value):
+                return value
+        if line.startswith("GOOGLE_API_KEY="):
+            value = line.split("=", 1)[1].strip().strip("\"'")
+            if _looks_like_key(value):
+                google_only = value
+
+    return google_only
 
 
 def _looks_like_key(value: str) -> bool:
@@ -172,24 +223,38 @@ def _looks_like_key(value: str) -> bool:
 
 
 def _print_api_key_setup() -> None:
-    print("\nTo continue, we need a Gemini API key. It is a short secret used by this course to call Gemini APIs.")
-    print("You can keep it in this workspace's `.env` file; it is only used locally.")
+    print("\nTo continue, we need a Gemini API key. It is a local secret for this workspace and only used to run loops.")
     print("Get one now:")
     print("1) Open https://aistudio.google.com/apikey")
     print("2) Sign in with Google and click \"Create API key\"")
     print("3) Copy the key (looks like \"AIza...\") and paste it when prompted below.")
+    print("4) The script writes it to both names below so all loop starters can read it:")
+    print("   - GEMINI_API_KEY")
+    print("   - GOOGLE_API_KEY")
 
 
 def _write_key(template: str, path: Path, key: str) -> None:
-    if path.exists() and "GEMINI_API_KEY=" in template:
+    updated = template
+
+    if "GEMINI_API_KEY=" in updated:
         updated = re.sub(
             r"^GEMINI_API_KEY=.*$",
             f"GEMINI_API_KEY={key}",
-            template,
+            updated,
             flags=re.MULTILINE,
         )
     else:
-        updated = template.rstrip("\n") + f"\nGEMINI_API_KEY={key}\n"
+        updated = updated.rstrip("\n") + f"\nGEMINI_API_KEY={key}\n"
+
+    if "GOOGLE_API_KEY=" in updated:
+        updated = re.sub(
+            r"^GOOGLE_API_KEY=.*$",
+            f"GOOGLE_API_KEY={key}",
+            updated,
+            flags=re.MULTILINE,
+        )
+    else:
+        updated = updated.rstrip("\n") + f"\nGOOGLE_API_KEY={key}\n"
 
     path.write_text(updated)
 
@@ -218,6 +283,60 @@ def _run_command(cmd: Sequence[str], cwd: Optional[Path] = None) -> int:
     display = " ".join(cmd)
     print(f"$ {display}")
     return subprocess.run(cmd, cwd=str(cwd) if cwd else None).returncode
+
+
+def _print_bootstrap_plan() -> None:
+    print("Planned steps:")
+    print("1) Verify Python version support (3.11–3.13).")
+    print("2) Resolve uv (or show manual install path if missing).")
+    print("3) Read .env.example and prepare ~/ai-systems/.env.")
+    print("4) Capture Gemini key and write GEMINI_API_KEY + GOOGLE_API_KEY.")
+    print("5) Run `uv sync` in Group A.")
+    print("6) Run setup/sanity_check.py in Group A.")
+
+
+def _is_already_bootstrap_ready(
+    group_a: Path,
+    state_path: Path,
+    uv: Sequence[str],
+    key: str,
+) -> bool:
+    if not state_path.exists():
+        return False
+
+    if not (group_a / ".venv").exists():
+        return False
+
+    pyproject = group_a / "pyproject.toml"
+    lock = group_a / "uv.lock"
+    if not pyproject.exists() or not lock.exists():
+        return False
+
+    try:
+        state = json.loads(state_path.read_text())
+    except Exception:
+        return False
+
+    if state.get("env_key_prefix") != key[:8]:
+        return False
+    if state.get("uv") != uv[0]:
+        return False
+    if state.get("pyproject_mtime") != pyproject.stat().st_mtime:
+        return False
+    if state.get("lock_mtime") != lock.stat().st_mtime:
+        return False
+    return True
+
+
+def _write_bootstrap_state(state_path: Path, uv: Sequence[str], group_a: Path, key: str) -> None:
+    data = {
+        "env_key_prefix": key[:8],
+        "uv": uv[0],
+        "pyproject_mtime": (group_a / "pyproject.toml").stat().st_mtime,
+        "lock_mtime": (group_a / "uv.lock").stat().st_mtime,
+        "updated_at": datetime.now().isoformat(),
+    }
+    state_path.write_text(json.dumps(data))
 
 
 def _prompt_yes_no(prompt: str, *, default: bool = True) -> bool:

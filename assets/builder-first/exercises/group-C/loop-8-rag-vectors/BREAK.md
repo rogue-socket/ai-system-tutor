@@ -3,13 +3,7 @@
 Switch to **Group C** first:
 
 ```bash
-cd ~/ai-systems/exercises/group-C
-uv sync   # heavy: torch ~2GB on first sync, 5–15 min on slow connections
-# macOS / Linux:
-source .venv/bin/activate
-
-# Windows PowerShell:
-# .venv\Scripts\activate
+python ~/ai-systems/setup/group_env.py --group C
 ```
 
 If you don't want the torch download (Stage 5 needs it for cross-encoder reranking), defer Stage 5 — Stages 1–4 use Gemini embeddings + chromadb + rank-bm25 only, no torch.
@@ -23,7 +17,7 @@ The starter is a corpus of 20 short docs about distributed systems and databases
 ## Run it first
 
 ```bash
-python naive_search.py
+python ~/ai-systems/setup/group_env.py --group C --run python naive_search.py
 ```
 
 You'll see precision@5, MRR, average latency, and per-query results. Note where it does well (exact-term queries) and where it does badly (synonym queries: *"semantic search"* doesn't find `embeddings`; *"how can multiple machines agree on a value despite failures?"* doesn't find `raft` or `paxos` if those words aren't in the query).

@@ -155,7 +155,7 @@
 <p class="sub">Renders your notes, cheatsheets, and flashcards from this workspace.</p>
 
 <div class="banner" id="serve-hint">
-  Run from this workspace root: <code>python -m http.server 8000</code> — then refresh this page at <code>http://localhost:8000</code>. (Opening this file directly via <code>file://</code> won't work — browsers block <code>fetch()</code> from disk.)
+  Run from this workspace root: <code>python viewer.py</code> (or <code>python -m http.server 8000</code> as fallback) — then open <code>http://localhost:8000</code>. (Opening this file directly via <code>file://</code> won't work — browsers block <code>fetch()</code> from disk.)
 </div>
 
 <nav>
@@ -192,7 +192,7 @@ async function loadManifest() {
     manifest = await res.json();
     document.getElementById('serve-hint').style.display = 'none';
   } catch (e) {
-    setBanner(`Could not load manifest.json (${e.message}). Make sure you ran "python -m http.server 8000" in your workspace root and accessed this page via http://localhost:8000.`);
+    setBanner(`Could not load manifest.json (${e.message}). Make sure you ran "python viewer.py" in the workspace root and accessed this page via http://localhost:8000.`);
     manifest = { notes: [], cheatsheets: [], flashcards: [] };
   }
 }

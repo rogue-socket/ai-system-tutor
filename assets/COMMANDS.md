@@ -39,7 +39,7 @@ Any of these work as plain English:
 ## Other handy paths
 
 - **`~/ai-systems/README.md`** — workspace layout and what's in each file.
-- **`~/ai-systems/index.html`** — viewer for your notes / cheatsheets / flashcards. Run `python -m http.server 8000` from the workspace, then open `http://localhost:8000`.
+- **`~/ai-systems/index.html`** — viewer for your notes / cheatsheets / flashcards. Run `python viewer.py` from `~/ai-systems`, then open `http://localhost:8000`. Use `python -m http.server 8000` as fallback.
 - **`~/ai-systems/progress.json`** — your full course state. Don't edit by hand unless you know what you're doing.
 - **`~/ai-systems/session-state.md`** — where you left off last session. The tutor reads this on Warm Resume.
 

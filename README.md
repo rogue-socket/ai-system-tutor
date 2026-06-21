@@ -237,9 +237,11 @@ ai-system-tutor/
 ~/ai-systems/
 ├── README.md                           # from assets/workspace-README.md
 ├── COMMANDS.md                         # slash-command reference card
+├── viewer.py                           # workspace viewer launcher (python viewer.py)
+├── practical-setup.py                  # practical-mode dependency/key bootstrap
 ├── progress.json                       # learner profile, statuses, SR queue
 ├── session-state.md                    # last-session checkpoint
-├── index.html                          # viewer — open via python -m http.server
+├── index.html                          # viewer — open via python viewer.py
 ├── manifest.json                       # content index for the viewer
 ├── notes/                              # one .md per topic + diagnostic-YYYY-MM-DD.md
 │   └── diagrams/
@@ -255,7 +257,7 @@ To view your notes / cheatsheets / flashcards as a styled site:
 
 ```sh
 cd ~/ai-systems
-python -m http.server 8000
+python viewer.py
 # open http://localhost:8000 in any browser
 ```
 
@@ -272,7 +274,7 @@ python -m http.server 8000
 - **`from langchain.agents import AgentExecutor` raises `TypeError`** on Loop 5+: you're on Python 3.14. Switch to 3.11–3.13. The constraint is in `requires-python = ">=3.11,<3.14"`; if you're seeing this, `uv` may be overriding — set `UV_PYTHON=3.13` or install Python 3.13 explicitly.
 - **`DefaultCredentialsError` on Loop 5+:** `ChatGoogleGenerativeAI` reads `GOOGLE_API_KEY`. The starter files alias it from `GEMINI_API_KEY` at module top. If you removed the alias line, set both env vars to your key.
 - **First-time `uv sync` for Group C is slow (~5–15 min):** that's torch (~2GB). Stages 1–4 of Loop 8 don't need torch; you can defer the heavy install until Stage 5 (cross-encoder reranking).
-- **Workspace viewer shows "Could not load `manifest.json`":** you opened `index.html` via `file://`. Browsers block `fetch()` from disk. Run `python -m http.server 8000` from the workspace root and open `http://localhost:8000`.
+- **Workspace viewer shows "Could not load `manifest.json`":** you opened `index.html` via `file://`. Browsers block `fetch()` from disk. Run `python viewer.py` from the workspace root and open `http://localhost:8000`.
 - **Skill not auto-discovered in Claude Code:** check `~/.claude/skills/ai-systems-tutor/SKILL.md` exists (symlink or real file). If symlink is broken, re-run `./install.sh`.
 - **Codex / Copilot CLI doesn't pick up `AGENTS.md`:** ensure you're in a directory where `AGENTS.md` is reachable (real file or symlink). `ls -la AGENTS.md` should show it.
 

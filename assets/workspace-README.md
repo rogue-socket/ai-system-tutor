@@ -11,8 +11,10 @@ You don't need to edit anything by hand. The skill writes here on every meaningf
 ├── README.md             ← this file
 ├── progress.json         ← learner profile, topic statuses, SR queue, session/exercise/review logs
 ├── session-state.md      ← last-session checkpoint (where you left off, what's next)
-├── index.html            ← workspace viewer (open with `python -m http.server 8000`)
+├── index.html            ← workspace viewer (open with `python viewer.py`)
 ├── manifest.json         ← index for the viewer; tutor maintains
+├── viewer.py             ← starts the workspace server on localhost:8000
+├── practical-setup.py    ← one-command practical exercise bootstrap
 ├── COMMANDS.md           ← slash commands and natural-language overrides cheat-sheet
 ├── notes/                ← one .md per topic + diagnostic-YYYY-MM-DD.md
 │   └── diagrams/         ← interactive HTML diagrams generated during lessons
@@ -28,7 +30,7 @@ You don't need to edit anything by hand. The skill writes here on every meaningf
 Run from this directory:
 
 ```bash
-python -m http.server 8000
+python viewer.py
 ```
 
 Then open `http://localhost:8000` in any browser. You'll see a styled, navigable view of your notes, cheatsheets, and flashcards — the same files the tutor wrote to disk, just renderable. Three tabs (Notes / Cheatsheets / Flashcards) with click-to-flip on flashcards.

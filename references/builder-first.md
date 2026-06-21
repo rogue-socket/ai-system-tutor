@@ -39,23 +39,48 @@ Activating a group (`source group-A/.venv/bin/activate`) makes all that group's 
 
 ## Setup (one-time, before Loop 1)
 
-The setup must run in under 5 minutes for a learner with a working Python install. If it takes longer, fix the setup, not the lessons.
+The setup should feel boring. Keep setup to 5 minutes and keep learning for later.
 
-### Step 0a — Install `uv`
+### Step 0a — Run bootstrap (recommended)
+
+From the workspace root:
+
+```bash
+cd ~/ai-systems
+python setup/bootstrap.py
+```
+
+This handles `uv`, `.env`, Group A install, and the sanity check.
+
+If bootstrap fails, keep setup active and use exact recovery commands before any loop work:
+
+```bash
+cd ~/ai-systems
+python setup/bootstrap.py --non-interactive --force
+```
+
+If that fails, use the manual path below in this same order.
+
+### Step 0b — Install `uv`
 
 `uv` is the dependency manager. One binary, fast, replaces `pip + venv`.
 
-- macOS / Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`
-- Windows: `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
+- Preferred for this curriculum: `python setup/bootstrap.py` handles this.
+- If you are not using `bootstrap.py`, install `uv` manually:
+  - macOS / Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - Windows: `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
 
 ### Step 0b — Get a Gemini API key
 
-Documented in detail at `setup/README.md` (asset, section 2). Click-path:
+Documented in detail at `setup/README.md` (asset). `setup/bootstrap.py` is the preferred path and prompts for key capture automatically; in non-interactive mode it requires `GEMINI_API_KEY` / `GOOGLE_API_KEY` up front and prints exact rerun lines.
+
+Click-path:
 
 1. Go to `https://aistudio.google.com/apikey`.
 2. Click "Create API key" → pick a project (or create one).
 3. Copy the key.
-4. In the workspace root, `cp .env.example .env` and paste the key as `GEMINI_API_KEY=...`.
+4. `setup/bootstrap.py` writes this automatically (reads `GEMINI_API_KEY` or `GOOGLE_API_KEY` if set in env).
+   If you need manual fallback, in workspace root run `cp .env.example .env` and paste the key as `GEMINI_API_KEY=...`.
 
 The free tier covers everything in Loops 1–9. The capstone (Loop 10) may exceed it depending on the project; learner can switch to paid Gemini or another provider via the `llm.py` wrapper.
 
@@ -70,7 +95,7 @@ Builder-first uses **four group venvs**, not per-loop. Loops share environments 
 | **C** | 8 | + `chromadb`, `rank-bm25`, `sentence-transformers` |
 | **D** | 9, 10 | + `fastapi`, `uvicorn`, `httpx`, `prometheus-client` |
 
-Each group lives at `~/ai-systems/exercises/group-{A,B,C,D}/` with its own `pyproject.toml` and `uv.lock`. Activation is two separate commands: `cd` into the group dir, then `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows PowerShell). The tutor announces the group switch when the learner crosses a boundary.
+Each group lives at `~/ai-systems/exercises/group-{A,B,C,D}/` with its own `pyproject.toml` and `uv.lock`. Use `python setup/group_env.py --group X` (where `X` is `A`, `B`, `C`, or `D`) to handle sync + env prep. The tutor announces the group switch when the learner crosses a boundary.
 
 ### Step 0d — Sanity check
 
@@ -94,7 +119,8 @@ When a learner picks `builder_first` in Step 2.5 of `SKILL.md`, the lane's diagn
 >
 > First, 10 minutes of setup — install `uv`, get a Gemini key, run a sanity check. Then Loop 1: the dumbest possible agent, ~30 lines. Sound good?"
 
-If they confirm, walk them through `setup/README.md` (three steps: install `uv`, get a Gemini key, `uv sync` Group A + run `setup/sanity_check.py`). On sanity check pass, open `loop-1-bare-loop/agent.py` in the learner's editor and start.
+If they confirm, run `cd ~/ai-systems && python setup/bootstrap.py` (preferred), then open `loop-1-bare-loop/agent.py`.
+Fallback: `setup/README.md` documents the manual flow as backup; the preferred path is always `python setup/bootstrap.py`.
 
 If they want to redirect (e.g. "skip Loop 1, I've done this") — that's `/loop quickpass` for proof-of-knowledge or `/loop 2` to jump. Honor it.
 
@@ -366,8 +392,10 @@ If maintenance lapses, the `LOOP_VERSIONS.md` warning kicks in at first activati
 
 ## Cross-platform notes
 
-- **macOS / Linux.** Primary supported. `setup.sh` for installs. `source .venv/bin/activate`.
-- **Windows.** Secondary. `setup.ps1` for installs. `.venv\Scripts\activate`. WSL2 is an acceptable fallback if a learner hits Windows-specific issues with any group's deps.
+- **macOS / Linux.** Primary supported. `setup.sh` for installs, or just `python setup/bootstrap.py`.
+  Use `python setup/group_env.py --group X` instead of manual `cd` + activate.
+- **Windows.** Secondary. `setup.ps1` for installs, or `python setup/bootstrap.py` in a terminal.
+  Use `python setup/group_env.py --group X` (where `X` is A/B/C/D). WSL2 is an acceptable fallback if a learner hits Windows-specific issues with any group's deps.
 - **Cloud shells** (GitHub Codespaces, Replit, etc.). Loops 1–7 work. Loop 9's deploy step assumes shell access to a cloud provider; cloud shells often have one ready. Document the deviation in the loop if needed.
 
 ---
@@ -377,6 +405,7 @@ If maintenance lapses, the `LOOP_VERSIONS.md` warning kicks in at first activati
 This document is the **design**. The implementation lives under `assets/builder-first/`. Status:
 
 **Shipped (Loop 1 + Group A foundation):**
+- [x] `assets/builder-first/setup/bootstrap.py` — end-to-end setup helper for uv install, `.env`, Group A sync, and sanity check
 - [x] `assets/builder-first/.env.example`
 - [x] `assets/builder-first/setup/README.md` — combined uv install + Gemini key + sanity check flow
 - [x] `assets/builder-first/setup/sanity_check.py`
@@ -429,7 +458,7 @@ A one-time SDK-import-and-attribute drift pass was run against fresh `uv sync` v
 - Drift pass tested imports + SDK surface, not runtime behavior. Loop 9's streaming + tool-calls combo is specifically called out in BREAK.md as awkward; first to break in real use.
 - Cost projections in Loop 9's NOTES.md template assume Gemini Flash pricing as of 2026-05. Stale within months — needs refresh during the 6-month maintenance pass.
 - Stretch suggestions occasionally reference out-of-deps packages (Loop 6's checkpointer, Loop 8's pgvector, contextual retrieval, late chunking). Learners pursuing stretch will need to `uv add` themselves.
-- Cross-platform (Windows) untested. Bash + Unix-style commands throughout setup/README.md and the BREAK.md files. PowerShell users will adapt but it's a friction point.
+- Cross-platform (Windows): most setup/dependency friction is down to native dependencies, not shell commands in BREAK/README. The helper scripts keep setup-step syntax stable across shells.
 
 **Pending — the big one:**
 
