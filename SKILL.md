@@ -141,9 +141,16 @@ For **beginner / bridge / middle**, the lane decided *where to start*; the orien
 > "One more pick. How do you want to walk the course?
 >
 > - **Foundations-first** (the tutor's default). We walk L0 → L8. Mental models first — what a model actually is, why it's probabilistic, what tokens are — then build agents on top. Slower start, sturdier base. Best if you want to understand what you're using before you use it.
-> - **Builder-first**. Lesson 1 ships a small working agent — ~30 lines, Anthropic SDK (or LangChain if you prefer), tool-use loop. Lesson 2 breaks it on purpose. Foundations get filled in *as the agent breaks* — context limits when it forgets mid-loop, embeddings when retrieval fails, evals when it silently regresses. Faster momentum. The risk is cargo-culting framework code without understanding the loop, so the spiral-back to foundations is mandatory, not optional.
+> - **Builder-first**. Lesson 1 ships a small working agent — ~30 lines, a tool-use loop, and no framework magic. Lesson 2 breaks it on purpose. Foundations get filled in *as the agent breaks* — context limits when it forgets mid-loop, embeddings when retrieval fails, evals when it silently regresses. Faster momentum. The risk is cargo-culting framework code without understanding the loop, so the spiral-back to foundations is mandatory, not optional.
 >
 > Either works. If unsure, pick foundations-first."
+
+**Practical commitment disclosure.** Before asking the learner to confirm builder-first, say that
+the shipped live loops use a Gemini API key and are designed for its free tier; quota and
+availability still vary, so never promise zero cost. They can inspect the loop scaffolding and
+trace the tool-call design before adding a key. If they cannot use an API key, offer
+foundations-first or code inspection rather than inventing a local/mock runtime that is not
+shipped.
 
 Save to `progress.json` as `learner.orientation` — one of `foundations_first` | `builder_first`.
 
@@ -443,6 +450,11 @@ When a learner mentions a deadline, project, career switch, interview pressure, 
 
 If a learner says any version of *"I want to learn this one"*, *"can we come back to X"*, *"this is exactly what I'm worried about"* — that signal **outranks the gap-ranking algorithm**. Track it. The diagnostic's job is to surface gaps; if the learner has *already* surfaced one with a stated request, queue it as the next or near-next lesson regardless of where the rest of the gap-ranking puts it. Generic prioritization is for when the learner has no stated preference; once they've stated one, follow it.
 
+**Finish direct questions before advancing.** Count every direct question in the learner's turn
+and answer each one before proposing the next exercise, quiz, or route choice. A Socratic
+question may deepen the answer, but cannot replace an operational answer the learner needs to
+start safely (cost, credentials, privacy, setup, or success criteria).
+
 ### Checkpoint religiously (this is critical for the multi-session experience)
 
 Update `session-state.md` whenever:
@@ -598,6 +610,8 @@ Load only when the relevant mode is active:
 - `references/spaced-repetition.md` — `progress.json` schema, SM-2 lite math
 - `references/session-control.md` — session pause/resume, context management protocols, `session-state.md` schema
 - `references/builder-first.md` — 10-loop builder-first path spec (load when `learner.orientation = builder_first`); covers setup, group venvs, per-loop break/win, skip mechanism, dependency map
+- `references/anti-patterns-with-examples.md` — paired failure patterns for agent design and teaching
+- `references/host-adapters.md` — Claude Code, Codex, and GitHub Copilot entry rules
 
 ## Asset files
 

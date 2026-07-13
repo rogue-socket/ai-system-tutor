@@ -113,6 +113,16 @@ rm ~/.claude/skills/ai-systems-tutor
 
 ## Usage
 
+### Provider support
+
+| Provider | Repository adapter | Start command |
+|---|---|---|
+| Claude Code | `SKILL.md` / `CLAUDE.md` | `start the AI systems tutor` |
+| Codex CLI | `AGENTS.md` | `codex "start the AI systems tutor"` |
+| GitHub Copilot | `.github/copilot-instructions.md` | `Use the ai-systems-tutor skill in this repo and start the course.` |
+
+All three providers use the same workspace (`~/ai-systems/`) and the same two orientations: foundations-first (bottom-up) and builder-first (top-down, hands-on).
+
 ### Claude Code
 
 In a fresh shell:
